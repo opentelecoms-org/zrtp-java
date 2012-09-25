@@ -21,6 +21,7 @@
  */
 package zorg.platform.blackberry;
 
+
 import net.rim.device.api.util.Comparator;
 import net.rim.device.api.util.SimpleSortingVector;
 import zorg.platform.LongSortedVector;
@@ -67,7 +68,7 @@ public class BBSortedVector implements LongSortedVector {
     }
 
 	public Long getAt(int index) {
-	    return (Long)vector.getAt(index);
+	    return (Long)vector.elementAt(index);
     }
 
 	public void removeElementAt(int index) {

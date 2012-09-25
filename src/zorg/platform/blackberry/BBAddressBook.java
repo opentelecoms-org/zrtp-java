@@ -22,47 +22,15 @@
 package zorg.platform.blackberry;
 
 import zorg.platform.AddressBook;
-import zorg.platform.CryptoUtils;
-import zorg.platform.PersistentHashtable;
-import zorg.platform.Platform;
-import zorg.platform.Utils;
-import zorg.platform.ZrtpLogger;
 
-import com.privategsm.main.BuildSettings;
+public class BBAddressBook implements AddressBook {
 
-public class BBPlatform implements Platform {
-
-	private static Platform instance = new BBPlatform();
-	private final ZrtpLogger logger = new BBLogger();
-	private final AddressBook ab    = new BBAddressBook();
-	private final BBCryptoUtils cu = new BBCryptoUtils();
-	private final BBByteUtils bu = new BBByteUtils();
-	
-	public static Platform getPlatform() {
-		return instance;
-	}
-	
-	public ZrtpLogger getLogger() {
-		return logger;
-	}
-	
-	public AddressBook getAddressBook() {
-		return ab;
-	}
-
-	public boolean isDebugVersion() {
-	    return BuildSettings.DEBUG;
+	public boolean isInAddressBook(String number) {
+	    return BBContact.lookupByNumber(number).getName() != null;
     }
 
-	public Utils getUtils() {
-	    return bu;
+	public boolean matchingNumbers(String number1, String number2) {
+	    return BBContact.matchingNumbers(number1, number2);
     }
 
-	public CryptoUtils getCrypto() {
-	    return cu;
-    }
-
-	public PersistentHashtable getHashtable() {
-	    return new HashtableAdapter();
-    }
 }

@@ -34,7 +34,6 @@ import net.rim.device.api.crypto.InitializationVector;
 import zorg.platform.EncryptorSuite;
 
 public class BBEncryptorSuite implements EncryptorSuite {
-
     
     private AESEncryptorEngine engine;  // Encryptor components created at session start for tx encryption
     private InitializationVector initVector;
@@ -72,9 +71,5 @@ public class BBEncryptorSuite implements EncryptorSuite {
         }
         return baos.toByteArray();
     }
-	
-    //private AESEncryptorEngine iRxEncryptorEngine;  // Encryptor components created at first received packet for rx encryption
-    //private InitializationVector iRxInitVector;
-    //private CBCEncryptorEngine iRxCBCEngine;
 
 }

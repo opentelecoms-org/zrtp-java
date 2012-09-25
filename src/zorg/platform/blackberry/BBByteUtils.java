@@ -21,8 +21,6 @@
  */
 package zorg.platform.blackberry;
 
-import com.privategsm.protocols.BitUtils;
-
 import net.rim.device.api.util.Arrays;
 import zorg.platform.Utils;
 import zorg.platform.LongSortedVector;
@@ -32,18 +30,46 @@ public class BBByteUtils implements Utils {
 	public boolean equals(byte[] array1, int offset1, byte[] array2, int offset2, int length) {
 	    return Arrays.equals(array1, offset1 , array2, offset2, length);
     }
-
-	public String byteToHexString(byte[] buffer, int offset, int length) {
-	    return com.privategsm.main.Utils.byteToHexString(buffer, offset, length);
+	
+    public String byteToHexString(byte[] b, int offset, int len) {
+        if (b == null) {
+            return (new String(""));
+        }
+        //if (len>32) len = 32;
+        char[] cArray = new char[len*2];
+        for (int i = 0; i < len; i++) {
+            byte hex = (byte)((b[offset+i]>>4) & 0x0f);
+            char ch;
+            if (hex > 0x09) {
+                ch = (char)(hex - 0x0A + 'A');
+            } else {
+                ch = (char)(hex + '0');
+            }
+            cArray[2*i] = ch;
+            hex = (byte)(b[offset+i] & 0x0f);
+            if (hex > 0x09) {
+                ch = (char)(hex - 0x0A + 'A');
+            } else {
+                ch = (char)(hex + '0');
+            }
+            cArray[1+(2*i)] = ch;
+        }
+        String s = new String(cArray);
+        return s;
     }
 	
 	public String byteToHexString(byte[] buffer) {
 		if(buffer == null) return "<NULL>";
 		return byteToHexString(buffer, 0, buffer.length);
     }
-
-	public int getInt(byte[] data, int offset, int length) {
-		return BitUtils.getInt(data, offset, offset + length);
+	
+	public int getInt(byte[] data, int begin, int end) {
+		long n = 0;
+		for (; begin < end; begin++) {
+			n <<= 8;
+			n += 0xFF & data[begin];
+		}
+		return (int) n;
 	}
 
 	public void zero(byte[] data) {

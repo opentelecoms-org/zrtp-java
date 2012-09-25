@@ -21,18 +21,43 @@
  */
 package zorg.platform.blackberry;
 
-import zorg.platform.AddressBook;
+import net.rim.device.api.crypto.CryptoTokenException;
+import zorg.CryptoException;
+import zorg.platform.HMAC;
 
-import com.privategsm.utils.Contact;
+public class HMACBBAdaptor implements HMAC{
 
-public class BBAddressBook implements AddressBook {
-
-	public boolean isInAddressBook(String number) {
-	    return Contact.lookupByNumber(number).getName() != null;
+	private net.rim.device.api.crypto.HMAC hmac;
+	
+	public HMACBBAdaptor(net.rim.device.api.crypto.HMAC hmac) {
+		this.hmac = hmac;
     }
 
-	public boolean matchingNumbers(String number1, String number2) {
-	    return Contact.matchingNumbers(number1, number2);
+	public void reset() throws CryptoException {
+		try {
+	        hmac.reset();
+        } catch (CryptoTokenException e) {
+        	throw new CryptoException(e);
+        }
     }
 
+	public int getMAC(byte[] data, int offset) throws CryptoException {
+	    try {
+	        return hmac.getMAC(data, offset);
+        } catch (CryptoTokenException e) {
+        	throw new CryptoException(e);
+		}
+    }
+
+	public void update(byte[] data, int offset, int length) {
+	    hmac.update(data, offset, length);
+    }
+
+	public void update(byte[] data) throws CryptoException {
+		try {
+	        hmac.update(data);
+        } catch (CryptoTokenException e) {
+        	throw new CryptoException(e);      
+		}
+    }
 }

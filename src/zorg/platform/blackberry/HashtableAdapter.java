@@ -26,42 +26,45 @@ import java.util.Hashtable;
 
 import net.rim.device.api.system.PersistentObject;
 import net.rim.device.api.system.PersistentStore;
-
-import com.privategsm.main.variants.VariantManager;
-
 import zorg.ZRTPCache;
 import zorg.ZrtpCacheEntry;
 import zorg.platform.PersistentHashtable;
+import zorg.platform.ZrtpLogger;
+import zorg.platform.blackberry.impl.BBZrtpCacheManager;
 
 public class HashtableAdapter implements PersistentHashtable {
 
-    private static final long ZRTP_CACHE_KEY = VariantManager.getVariant().getZrtpCacheKey();
-    
 	private Hashtable cache = null;
 	private PersistentObject persistent = null;
 	
-	public HashtableAdapter() {
+	private BBZrtpCacheManager zrtpCacheManager;
+	private ZrtpLogger logger;
+	
+	public HashtableAdapter(ZrtpLogger l) {
+		zrtpCacheManager = new BBZrtpCacheManager();
+		logger = l;
+		
         cache = null;
-		 persistent = PersistentStore.getPersistentObject(ZRTP_CACHE_KEY);
+		persistent = PersistentStore.getPersistentObject(zrtpCacheManager.getZrtpCacheKey());
         try {
             cache = (Hashtable)persistent.getContents();
         } catch (ClassCastException ex) {
-            // we'll overwrite the original cache type with new implementation below
+            logger.logException("Exception loading zrtp cache - " + ex.getMessage());
         }
         if (cache != null) {
             // Could have a previous version of cache stored (i.e. saved as single String rather than CacheEntry)
             // If so, recreate a new one
             try {
-            	ZrtpCacheEntry ce = (ZrtpCacheEntry)cache.get(ZRTPCache.LOCAL_ZID_KEY);
+            	cache.get(ZRTPCache.LOCAL_ZID_KEY);
             } catch (Exception ccex) {
                 cache.clear();
                 cache = null;
             }
         }
         if (cache == null) {
-            cache = VariantManager.getVariant().newZtrpHashTable();
+            cache = zrtpCacheManager.newZtrpHashTable();
             persistent.setContents(cache);
-            persistent.commit();
+            persistent.forceCommit();
         }
 
     }
@@ -75,18 +78,20 @@ public class HashtableAdapter implements PersistentHashtable {
     }
 
 	public void put(String zid, byte[] data, String phoneNumber) {
-		ZrtpCacheEntry ce = VariantManager.getVariant().newZrtpCacheEntry(data, phoneNumber);
+		ZrtpCacheEntry ce = zrtpCacheManager.newZrtpCacheEntry(data, phoneNumber);
 		cache.put(zid, ce);
-		persistent.commit();
+        persistent.setContents(cache);
+		persistent.forceCommit();
     }
 
 	public void remove(String currentZid) {
 		cache.remove(currentZid);
-		persistent.commit();
+        persistent.setContents(cache);
+		persistent.forceCommit();
     }
 
 	public void reset() {
-		PersistentStore.destroyPersistentObject(ZRTP_CACHE_KEY);
+		PersistentStore.destroyPersistentObject(zrtpCacheManager.getZrtpCacheKey());
     }
 
 }

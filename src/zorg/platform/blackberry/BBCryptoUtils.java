@@ -46,7 +46,11 @@ import zorg.platform.RandomGenerator;
 
 public class BBCryptoUtils implements CryptoUtils {
 
-	public static com.privategsm.utils.RandomGenerator randomGenerator = com.privategsm.utils.RandomGenerator.getInstance();
+	public static RandomGenerator randomGenerator;
+
+	public void setRandomGenerator(RandomGenerator g) {
+		randomGenerator = g; 
+	}
 	
 	public Digest createDigestSHA1() {
 	    return new DigestBBAdapter(new SHA1Digest());

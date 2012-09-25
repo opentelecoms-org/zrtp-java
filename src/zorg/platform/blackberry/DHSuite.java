@@ -40,8 +40,6 @@ import zorg.ZrtpException;
 import zorg.platform.DiffieHellmanSuite;
 import zorg.platform.ZrtpLogger;
 
-import com.privategsm.main.Logger;
-
 public class DHSuite implements DiffieHellmanSuite {
 
 	private byte[] DH_PRIME = {
@@ -187,15 +185,15 @@ public class DHSuite implements DiffieHellmanSuite {
 	            byte[] keyArray = pub.getPublicKeyData(false);
 	            // This should give a key_size + 1 byte array in which 1st byte is a compression indicator
 	            // Just use the rightmost key_size bytes
-	            Logger.log("Using EC25 key, length "+keyArray.length, keyArray);
-	            Logger.log("Using EC38 key, length "+keyArray.length, keyArray);
+	            logger.log("Using EC25 key, length "+keyArray.length, keyArray);
+	            logger.log("Using EC38 key, length "+keyArray.length, keyArray);
 	            System.arraycopy(keyArray, 1, data, offset, keyArray.length -1);
 	        } else {
 	        	log("Writing public key for DH3K mode");
 	        	DHPublicKey pub = dhKeyPair.getDHPublicKey();
 	            byte[] keyArray = pub.getPublicKeyData();
 	            System.arraycopy(keyArray, 0, data, offset, 384);
-	            Logger.log("Using DH3K key, length "+keyArray.length, keyArray);
+	            logger.log("Using DH3K key, length "+keyArray.length, keyArray);
 	        }
 		} catch (Exception e) {
 			throw new ZrtpException(e);
@@ -206,38 +204,36 @@ public class DHSuite implements DiffieHellmanSuite {
 	    return dhMode.keyType == KeyAgreementType.DH_MODE_EC25 || dhMode.keyType == KeyAgreementType.DH_MODE_EC38;
     }
 
-	public byte[] getDhResult(byte[] aMsg, int offset) throws ZrtpException  {
+	public byte[] getDhResult(byte[] aMsg, int offset, boolean isLegacyClient) throws ZrtpException  {
 		try {
 			log("Getting DH result for mode " + dhMode);
 			if (useECDH()) {
-		        //TODO: verify whether and how to be RFC compliant, instead of interoperate with libzrtp
-				// for compatibility with a LibZRTP bug: zero-extend DHresult to the size of the corresponding pv (read in zorg source)
 		        int PV_LENGTH = dhMode.pvLengthInWords * 4;
 		        byte[] ecpvr = new byte[PV_LENGTH + 1]; // allow one byte extra for compression indicator
 		        System.arraycopy(aMsg, offset, ecpvr, 1, PV_LENGTH);
 		        ecpvr[0] = (byte)0x04; // uncompressed key used
 		        if(logger.isEnabled()) {
-		        	Logger.log("Using " + getDHName(dhMode) + " key, length "+ecpvr.length, ecpvr);
-		        	Logger.log("Using EC38 key, length "+ecpvr.length, ecpvr);
+		        	logger.log("Using " + getDHName(dhMode) + " key, length "+ecpvr.length, ecpvr);
+		        	logger.log("Using EC38 key, length "+ecpvr.length, ecpvr);
 		        }
 		        ECPublicKey ecpub;
 		        ecpub = new ECPublicKey(ecSystem, ecpvr);
 		        byte[] dhResult = ECDHKeyAgreement.generateSharedSecret(ecKeyPair.getECPrivateKey(), ecpub, false);
-		        //Here we add 32 leading bytes all zero to the DHResult
-		        //to make it the same size as S60 client's DHResult
-		        //only for interoperability reasons, although the size of DHResult
-		        //as stated in Section 4.4.1.4 in ECDH P-256 mode is in fact 32 bytes
-		        //as stated in Section 4.4.1.4 in ECDH P-384 mode is in fact 48 bytes
-		        byte[] iDHResult = new byte[PV_LENGTH]; // TBV: fixed size to 64 or variable?
-		        //System.arraycopy(dhResult, 0, iDHResult, 32, dhResult.length);
-		        System.arraycopy(dhResult, 0, iDHResult, iDHResult.length - dhResult.length, dhResult.length);
+		        byte[] iDHResult = null;
+		        if(!isLegacyClient) {
+		        	return dhResult;
+		        } else {
+		        	iDHResult = new byte[PV_LENGTH];
+		        	System.arraycopy(dhResult, 0, iDHResult, iDHResult.length - dhResult.length, dhResult.length);    
+		        }
+
 		        return iDHResult;
 		    } else {
 		        byte[] dhpvr = new byte[384];
 		        System.arraycopy(aMsg, offset, dhpvr, 0, 384); 
 		        DHPublicKey dhpub;
 		        if(logger.isEnabled()) {
-		        	Logger.log("Using " + getDHName(dhMode) + " key, length "+dhpvr.length, dhpvr);
+		        	logger.log("Using " + getDHName(dhMode) + " key, length "+dhpvr.length, dhpvr);
 		        }
 		        dhpub = new DHPublicKey(dhSystem, dhpvr);
 		        byte[] iDHResult = DHKeyAgreement.generateSharedSecret(dhKeyPair.getDHPrivateKey(), dhpub, true);
