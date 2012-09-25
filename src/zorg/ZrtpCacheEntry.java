@@ -21,14 +21,13 @@
  */
 package zorg;
 
+public interface ZrtpCacheEntry {
 
-public interface ZrtpCacheEntry  {
-     
-    void setData(byte[] data); 
-    
-    void setNumber(String number);
-    
-    byte[] getData();
-        
-    String getNumber();
+	byte[] getData();
+
+	String getNumber();
+
+	void setData(byte[] data);
+
+	void setNumber(String number);
 }

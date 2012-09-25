@@ -27,14 +27,9 @@ package zorg.platform;
 public interface RtpPacket {
 
 	/**
-	 * Returns sequence number 
+	 * Returns lenght of headers
 	 */
-	int getSequenceNumber();
-
-	/**
-	 * Returns a reference to internal byte arrays, which can be modified by SRTP
-	 */
-	byte[] getPacket();
+	int getHeaderLength();
 
 	/**
 	 * Returns packet length
@@ -42,23 +37,29 @@ public interface RtpPacket {
 	int getLength();
 
 	/**
+	 * Returns a reference to internal byte arrays, which can be modified by
+	 * SRTP
+	 */
+	byte[] getPacket();
+
+	/**
 	 * Returns length of payload only
 	 */
 	int getPayloadLength();
 
 	/**
+	 * Returns sequence number
+	 */
+	int getSequenceNumber();
+
+	/**
+	 * Returns SSCR
+	 */
+	int getSscr();
+
+	/**
 	 * set/update payload length, extending internal array if required
 	 */
 	void setPayloadLength(int length);
-
-	/**
-	 * Returns lenght of headers
-	 */
-	int getHeaderLength();
-
-	/**
-	 * Returns SSCR 
-	 */
-	int getSscr();
 
 }

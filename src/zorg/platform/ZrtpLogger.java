@@ -22,23 +22,26 @@
 package zorg.platform;
 
 /**
- * Interface on native platform logger 
+ * Interface on native platform logger
  */
 public interface ZrtpLogger {
 
 	/** Returns if logger is enabled */
 	boolean isEnabled();
-	
-	/** Logs a message*/
+
+	/** Logs a message */
 	void log(String message);
 
 	/** Logs a message, adding HEX representation of buffer */
 	void log(String message, byte[] buffer);
-	
-	/** Logs message as a warning */
-	void logWarning(String message);
 
 	/** Logs message as an exception */
 	void logException(String message);
+
+	/** Logs message as a warning */
+	void logWarning(String message);
+
+	/** Logs a message, adding HEX representation of buffer, starting at Offset */
+	void log(String message, byte[] buffer, int offset, int length);
 
 }

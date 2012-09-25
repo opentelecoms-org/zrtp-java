@@ -26,35 +26,47 @@ package zorg.platform;
  */
 public interface ZrtpListener {
 
-    /**
-     * Notification that the session negotiation has been completed.
-     * 
-     * @param uccess        True if key exchange completed successfully
-     * @param msg           Message about how session completed, eg errors
-     */
-	void sessionNegotiationCompleted(boolean success, String msg);
+	/**
+	 * Notification from key generator that exchange is completed and data can
+	 * be received.
+	 * 
+	 * When ZRTP acts as the initiator, we don't have to wait for Conf2Ack,
+	 * successfully authenticated media packets act as Conf2Ack. Therefore this
+	 * function is detangled from the actual session completion.
+	 * 
+	 * @param txMasterKey
+	 *            Master Key to be used for encrypting transmitted packets
+	 * @param txMasterSalt
+	 *            Master Salt to be used for encrypting transmitted packets
+	 * @param rxMasterKey
+	 *            Master Key to be used for decrypting received packets
+	 * @param rxMasterSalt
+	 *            Master Salt to be used for decrypting received packets
+	 * @param firstSeqNum
+	 *            First sequence number to be used by RTP/SRTP
+	 */
+	boolean keyExchangeCompleted(byte[] txMasterKey, byte[] txMasterSalt,
+			byte[] rxMasterKey, byte[] rxMasterSalt, int firstSeqNum);
 
 	/**
 	 * Notify security warning
 	 * 
-	 * @param securityWarningType (ZRTP.SECURITY_WARNING_DOS | ZRTP.SECURITY_WARNING_CACHE_MISMATCH)
-	 * @param warning message describing warning
+	 * @param securityWarningType
+	 *            (ZRTP.SECURITY_WARNING_DOS |
+	 *            ZRTP.SECURITY_WARNING_CACHE_MISMATCH)
+	 * @param warning
+	 *            message describing warning
 	 */
 	void securityWarning(int securityWarningType, String warning);
 
-    /**
-     * Notification from key generator that exchange is completed and data can be received.
-     *
-     * When ZRTP acts as the initiator, we don't have to wait for Conf2Ack, successfully
-     * authenticated media packets act as Conf2Ack. Therefore this function is detangled
-     * from the actual session completion.
-     * 
-     * @param txMasterKey    Master Key to be used for encrypting transmitted packets
-     * @param txMasterSalt   Master Salt to be used for encrypting transmitted packets
-     * @param rxMasterKey    Master Key to be used for decrypting received packets
-     * @param rxMasterSalt   Master Salt to be used for decrypting received packets
-     * @param firstSeqNum    First sequence number to be used by RTP/SRTP
-     */
-	boolean keyExchangeCompleted(byte[] txMasterKey, byte[] txMasterSalt, byte[] rxMasterKey, byte[] rxMasterSalt, int firstSeqNum);
+	/**
+	 * Notification that the session negotiation has been completed.
+	 * 
+	 * @param uccess
+	 *            True if key exchange completed successfully
+	 * @param msg
+	 *            Message about how session completed, eg errors
+	 */
+	void sessionNegotiationCompleted(boolean success, String msg);
 
 }

@@ -23,8 +23,10 @@ package zorg;
 
 public class ZrtpException extends CryptoException {
 
+	private static final long serialVersionUID = -3200763663813446071L;
+
 	public ZrtpException(Exception e) {
-	    super(e);
-    }
+		super(e);
+	}
 
 }

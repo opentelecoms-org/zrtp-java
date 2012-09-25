@@ -22,18 +22,18 @@
 package zorg.platform;
 
 /**
- * Interface to abstract native addressbook interactions 
+ * Interface to abstract native addressbook interactions
  */
 public interface AddressBook {
-
-	/**
-	 * Returns true if phone numbers match, whichever is the their format
-	 */
-	boolean matchingNumbers(String number1, String number2);
 
 	/**
 	 * Returns true if phone number is present in the phone addressbook
 	 */
 	boolean isInAddressBook(String phoneNumber);
+
+	/**
+	 * Returns true if phone numbers match, whichever is the their format
+	 */
+	boolean matchingNumbers(String number1, String number2);
 
 }

@@ -22,23 +22,28 @@
 package zorg.platform;
 
 /**
- * Interface for RTP stack, used to send ZRTP packets, eventually with masquerading
+ * Interface for RTP stack, used to send ZRTP packets, eventually with
+ * masquerading
  */
 public interface RtpStack {
 
 	/** send a ZRTP packet with data as packet payload */
 	void sendZrtpPacket(byte[] data);
 
+	/**
+	 * ZRTP packets use invalid RTP version number and some PBX could drop them
+	 * instead of relaying. Enable active masquerading: RTP stack sends only
+	 * masqueraded ZRTP packets
+	 */
+	void setMasqueradingActive();
+
+	/**
+	 * ZRTP packets use invalid RTP version number and some PBX could drop them
+	 * instead of relaying. Enable dual masquerading: RTP stack send both
+	 * original and masqueraded ZRTP packet
+	 */
+	void setMasqueradingDual();
+
 	void setNextZrtpSequenceNumber(int startSeqNum);
 
-
-	
-	/** ZRTP packets use invalid RTP version number and some PBX could drop them instead of relaying. 
-	 * Enable dual masquerading: RTP stack send both original and masqueraded ZRTP packet */
-	void setMasqueradingDual();
-	
-	/** ZRTP packets use invalid RTP version number and some PBX could drop them instead of relaying. 
-	 * Enable active masquerading: RTP stack sends only masqueraded ZRTP packets */
-	void setMasqueradingActive();
-	
 }

@@ -29,33 +29,42 @@ import zorg.CryptoException;
 public interface HMAC {
 
 	/**
-	 * Reset HMAC
-	 * @throws CryptoException
-	 */
-	void reset() throws CryptoException;
-	
-	/**
-	 * Update HMAC with data
-	 * @param data buffer with data to be uset
-	 * @param offset start digesting data at offset
-	 * @param length use only length bytes
-	 */
-	void update(byte[] data, int offset, int length);
-	
-	/**
-	 * Update HMAC with passed buffer
+	 * Write MAC for all passed data since last reset
+	 * 
 	 * @param data
-	 * @throws CryptoException
-	 */
-	void update(byte[] data) throws CryptoException;
-	
-	/**
-	 * Write MAC for all passed data since last reset 
-	 * @param data write MAC inside this buffer
-	 * @param offset write starting at offset
+	 *            write MAC inside this buffer
+	 * @param offset
+	 *            write starting at offset
 	 * @return number of bytes written
 	 * @throws CryptoException
 	 */
 	int getMAC(byte[] data, int offset) throws CryptoException;
+
+	/**
+	 * Reset HMAC
+	 * 
+	 * @throws CryptoException
+	 */
+	void reset() throws CryptoException;
+
+	/**
+	 * Update HMAC with passed buffer
+	 * 
+	 * @param data
+	 * @throws CryptoException
+	 */
+	void update(byte[] data) throws CryptoException;
+
+	/**
+	 * Update HMAC with data
+	 * 
+	 * @param data
+	 *            buffer with data to be uset
+	 * @param offset
+	 *            start digesting data at offset
+	 * @param length
+	 *            use only length bytes
+	 */
+	void update(byte[] data, int offset, int length);
 
 }

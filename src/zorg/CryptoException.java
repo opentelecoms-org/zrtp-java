@@ -23,8 +23,10 @@ package zorg;
 
 public class CryptoException extends Exception {
 
+	private static final long serialVersionUID = -6557061337471158312L;
+
 	public CryptoException(Exception e) {
-	    super(e.getClass().getName() + ": " + e.getMessage());
-    }
+		super(e.getClass().getName() + ": " + e.getMessage());
+	}
 
 }

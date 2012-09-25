@@ -25,41 +25,49 @@ import java.util.Enumeration;
 
 import zorg.ZrtpCacheEntry;
 
-/** Adapter interface for a persistent map. 
- * Every change operation is automatically persisted
+/**
+ * Adapter interface for a persistent map. Every change operation is
+ * automatically persisted
  * */
 public interface PersistentHashtable {
 
-	/** 
-	 * Remove cache entry for specified ZID
-	 * @param zid 
-	 */
-	void remove(String zid);
-
 	/**
-	 * Add/replace a cache entry for specified ZID 
-	 * @param zid ZID index
-	 * @param data binary data bound to ZID
-	 * @param phoneNumber phone number bound to ZID
+	 * find a cache entry for specified ZID
+	 * 
+	 * @param key
+	 * @return cache entry
 	 */
-	void put(String zid, byte[] data, String phoneNumber);
+	ZrtpCacheEntry get(String zid);
 
 	/**
 	 * Returns enumeration of all ZIDs
+	 * 
 	 * @return
 	 */
 	Enumeration keys();
 
 	/**
-	 * find a cache entry for specified ZID
-	 * @param key
-	 * @return cache entry
+	 * Add/replace a cache entry for specified ZID
+	 * 
+	 * @param zid
+	 *            ZID index
+	 * @param data
+	 *            binary data bound to ZID
+	 * @param phoneNumber
+	 *            phone number bound to ZID
 	 */
-	ZrtpCacheEntry get(String zid);
-	
+	void put(String zid, byte[] data, String phoneNumber);
+
+	/**
+	 * Remove cache entry for specified ZID
+	 * 
+	 * @param zid
+	 */
+	void remove(String zid);
+
 	/**
 	 * Reset cache and remove from persistent storage
 	 */
 	void reset();
-
+	
 }

@@ -26,6 +26,6 @@ import zorg.CryptoException;
 public interface EncryptorSuite {
 
 	void encrypt(byte[] aIV, byte[] buffer) throws CryptoException;
-	
+
 	byte[] encryptIV_for_prf(byte[] IV) throws CryptoException;
 }

@@ -25,20 +25,20 @@ package zorg.platform;
  * Generic interface over different digest algorithms
  */
 public interface Digest {
-	
-	/** returns digest length */
-	public int getDigestLength();
-	
-	/** update digest with buffer data */
-	public void update(byte[] buffer);
-	
-	/** update digest with data in buffer at offset for length bytes */
-	public void update(byte[] buffer, int offset, int length);
-	
+
 	/** returns calculated digest */
 	public byte[] getDigest();
-	
+
 	/** insert digest into buffer at offeset and optionallu reset digest */
 	public int getDigest(byte[] buffer, int offset, boolean reset);
+
+	/** returns digest length */
+	public int getDigestLength();
+
+	/** update digest with buffer data */
+	public void update(byte[] buffer);
+
+	/** update digest with data in buffer at offset for length bytes */
+	public void update(byte[] buffer, int offset, int length);
 
 }

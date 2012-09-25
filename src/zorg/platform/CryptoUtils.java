@@ -28,61 +28,85 @@ import zorg.CryptoException;
  */
 public interface CryptoUtils {
 
-	/** create a SHA-1 Digest */
-	Digest createDigestSHA1();
-	
-	/** create a SHA-256 Digest */
-	Digest createDigestSHA256();
-	
-	/** create a SHA-384 Digest */
-	Digest createDigestSHA384();
-	
-	/** calculate HMAC-SHA-256 with passed in digest */
-	byte[] calculateSHA256HMAC(byte[] data, int offset, int length, byte[] aKey);
-	
-	/** calculate HMAC-SHA-384 with passed in digest */
-	byte[] calculateSHA384HMAC(byte[] data, int offset, int length, byte[] aKey);
-
-	/** create an HMAC-SHA1 initialized with the given key */
-	HMAC createHMACSHA1(byte[] hmacKey) throws CryptoException;
-
-	/** Return the a Random Generator. Great care should be put in choosing the a good source of entropy */
-	RandomGenerator getRandomGenerator();
-
-	/** AES encrypt data, using key and initialization vector 
+	/**
+	 * AES decrypt data, using key and initialization vector
 	 * 
-	 * @param data clear text
-	 * @param key  AES key
-	 * @param initVector initialization vector
+	 * @param data
+	 *            encrypted data
+	 * @param offset
+	 *            decrypt starting at offset
+	 * @param length
+	 *            decrypt lenth byte
+	 * @param key
+	 *            AEES key
+	 * @param initVector
+	 *            initialization vector
+	 * @return plain data
+	 * @throws CryptoException
+	 */
+	byte[] aesDecrypt(byte[] data, int offset, int length, byte[] key,
+			byte[] initVector) throws CryptoException;
+
+	/**
+	 * AES encrypt data, using key and initialization vector
+	 * 
+	 * @param data
+	 *            clear text
+	 * @param key
+	 *            AES key
+	 * @param initVector
+	 *            initialization vector
 	 * @return encrypted data
 	 * @throws CryptoException
 	 */
-	byte[] aesEncrypt(byte[] data, byte[] key, byte[] initVector) throws CryptoException;
-	
-	/** AES decrypt data, using key and initialization vector
-	 * 
-	 * @param data encrypted data
-	 * @param offset decrypt starting at offset
-	 * @param length decrypt lenth byte
-	 * @param key AEES key
-	 * @param initVector initialization vector
-	 * @return plain  data
-	 * @throws CryptoException
-	 */
-	byte[] aesDecrypt(byte[] data, int offset, int length, byte[] key, byte[] initVector) throws CryptoException;
+	byte[] aesEncrypt(byte[] data, byte[] key, byte[] initVector)
+			throws CryptoException;
+
+	/** calculate HMAC-SHA-256 with passed in digest */
+	byte[] calculateSHA256HMAC(byte[] data, int offset, int length, byte[] aKey);
+
+	/** calculate HMAC-SHA-384 with passed in digest */
+	byte[] calculateSHA384HMAC(byte[] data, int offset, int length, byte[] aKey);
 
 	/**
 	 * Create a Diffie Hellman suite
 	 */
 	DiffieHellmanSuite createDHSuite();
 
+	/** create a SHA-1 Digest */
+	Digest createDigestSHA1();
+
+	/** create a SHA-256 Digest */
+	Digest createDigestSHA256();
+
+	/** create a SHA-384 Digest */
+	Digest createDigestSHA384();
+
 	/**
-	 * Create AES encryptor suite for CBC and CFB encryption 
-	 * @param key AES key
-	 * @param initVector initialization vector
+	 * Create AES encryptor suite for CBC and CFB encryption
+	 * 
+	 * @param key
+	 *            AES key
+	 * @param initVector
+	 *            initialization vector
 	 * @return
 	 * @throws CryptoException
 	 */
-	EncryptorSuite createEncryptorSuite(byte[] key, byte[] initVector) throws CryptoException;
+	EncryptorSuite createEncryptorSuite(byte[] key, byte[] initVector)
+			throws CryptoException;
+
+	/** create an HMAC-SHA1 initialized with the given key */
+	HMAC createHMACSHA1(byte[] hmacKey) throws CryptoException;
+
+	/**
+	 * Return the a Random Generator. Great care should be put in choosing the a
+	 * good source of entropy
+	 */
+	RandomGenerator getRandomGenerator();
+
+	/**
+	 * Set the Random Generator
+	 */	
+	void setRandomGenerator(RandomGenerator r);
 	
 }

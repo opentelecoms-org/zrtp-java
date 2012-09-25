@@ -22,43 +22,30 @@
 package zorg.platform;
 
 /**
- * Interface of platform specific utility functions 
+ * Interface of platform specific utility functions
  */
 public interface Utils {
 
-	/** compare two byte arrays */
-	boolean equals(byte[] array1, int offset1, byte[] array2, int offset2, int length);
-	
-	/**
-	 * Returns an hex representation of a part of buffer
-	 * @param buffer data to be converted to hex form
-	 * @param offset start at offset
-	 * @param length format length bytes
-	 * @return
-	 */
-	String byteToHexString(byte[] buffer, int offset, int length);
-	
 	/**
 	 * Returns an hex representation of buffer
 	 */
 	String byteToHexString(byte[] buffer);
 
 	/**
-	 * Extract a int from a byte array
-	 * @param data
+	 * Returns an hex representation of a part of buffer
+	 * 
+	 * @param buffer
+	 *            data to be converted to hex form
 	 * @param offset
+	 *            start at offset
 	 * @param length
+	 *            format length bytes
 	 * @return
 	 */
-	int getInt(byte[] data, int begin, int end);
-	
+	String byteToHexString(byte[] buffer, int offset, int length);
+
 	/**
-	 * set to zero the byte array passed 
-	 */
-	void zero(byte[] data);
-	
-	/**
-	 * Returns a byte array copy of the argument  
+	 * Returns a byte array copy of the argument
 	 */
 	byte[] copy(byte[] data);
 
@@ -66,4 +53,23 @@ public interface Utils {
 	 * Create a Sorting Vector of Long objects
 	 */
 	LongSortedVector createSortedVector();
+
+	/** compare two byte arrays */
+	boolean equals(byte[] array1, int offset1, byte[] array2, int offset2,
+			int length);
+
+	/**
+	 * Extract a int from a byte array
+	 * 
+	 * @param data
+	 * @param offset
+	 * @param length
+	 * @return
+	 */
+	int getInt(byte[] data, int begin, int end);
+
+	/**
+	 * set to zero the byte array passed
+	 */
+	void zero(byte[] data);
 }

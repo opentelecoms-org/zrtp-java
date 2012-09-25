@@ -23,55 +23,59 @@ package zorg;
 
 public class KeyAgreementType {
 
-    // Supported DH modes
-    public final static int DH_MODE_UNDEFINED = 0;
-    public final static int DH_MODE_DH3K      = 1;
-    public final static int DH_MODE_EC38      = 2;
-    public final static int DH_MODE_EC25      = 3;
-    
-    private static final byte[] KEY_TYPE_EC25    = { 'E', 'C', '2', '5' };
-    private static final byte[] KEY_TYPE_EC38    = { 'E', 'C', '3', '8' };
-    private static final byte[] KEY_TYPE_DH3K    = { 'D', 'H', '3', 'k' };
+	// Supported DH modes
+	public final static int DH_MODE_UNDEFINED = 0;
+	public final static int DH_MODE_DH3K = 1;
+	public final static int DH_MODE_EC38 = 2;
+	public final static int DH_MODE_EC25 = 3;
 
+	private static final byte[] KEY_TYPE_EC25 = { 'E', 'C', '2', '5' };
+	private static final byte[] KEY_TYPE_EC38 = { 'E', 'C', '3', '8' };
+	private static final byte[] KEY_TYPE_DH3K = { 'D', 'H', '3', 'k' };
 
-    public static final KeyAgreementType DH3K    = new KeyAgreementType(DH_MODE_DH3K);
-    public static final KeyAgreementType ECDH256 = new KeyAgreementType(DH_MODE_EC25);
-    public static final KeyAgreementType ECDH384 = new KeyAgreementType(DH_MODE_EC38);
-    
+	public static final KeyAgreementType DH3K = new KeyAgreementType(
+			DH_MODE_DH3K);
+	public static final KeyAgreementType ECDH256 = new KeyAgreementType(
+			DH_MODE_EC25);
+	public static final KeyAgreementType ECDH384 = new KeyAgreementType(
+			DH_MODE_EC38);
+
+	public final int keyType;
+
+	public final HashType hash;
+
+	public final int pvLengthInWords;
+
 	public KeyAgreementType(int keyAgreementType) {
 		this.keyType = keyAgreementType;
 		switch (keyType) {
-	        case DH_MODE_EC25:
-		        hash = HashType.SHA256;
-		        pvLengthInWords = 16;
-		        break;
-	        case DH_MODE_EC38:
-		        hash = HashType.SHA384;
-		        pvLengthInWords = 24;
-		        break;
-	        case DH_MODE_DH3K:
-	        default:
-		        hash = HashType.SHA256;
-		        pvLengthInWords = 96;
-		        break;	
-        }
+		case DH_MODE_EC25:
+			hash = HashType.SHA256;
+			pvLengthInWords = 16;
+			break;
+		case DH_MODE_EC38:
+			hash = HashType.SHA384;
+			pvLengthInWords = 24;
+			break;
+		case DH_MODE_DH3K:
+		default:
+			hash = HashType.SHA256;
+			pvLengthInWords = 96;
+			break;
+		}
 	}
 
 	public byte[] getType() {
 		switch (keyType) {
-	        case DH_MODE_EC25:
-	        	return KEY_TYPE_EC25;
-	        case DH_MODE_EC38:
-	        	return KEY_TYPE_EC38;
-	        case DH_MODE_DH3K:
-	        default:
-	        	return KEY_TYPE_DH3K;
-        }
+		case DH_MODE_EC25:
+			return KEY_TYPE_EC25;
+		case DH_MODE_EC38:
+			return KEY_TYPE_EC38;
+		case DH_MODE_DH3K:
+		default:
+			return KEY_TYPE_DH3K;
+		}
 	}
-	
-	public final int	    keyType;
-	public final HashType	hash;
-	public final int	    pvLengthInWords;
 
 	public String toString() {
 		return new String(getType());

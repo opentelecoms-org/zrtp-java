@@ -21,10 +21,18 @@
  */
 package zorg;
 
-
 public class TestSettings {
-	
+
 	public static final boolean TEST = true;
+
+	public static boolean TEST_AUDIO_FEED_NO_DATA;
+	public static boolean TEST_AUDIO_FEED_FILE;
+	public static boolean TEST_DROP_ALL_INCOMING_DATA;
+	public static boolean TEST_DIGITAL_SIGNATURE;
+	public static boolean TEST_SRTP_REPLAY_PROTECTION;
+	public static boolean SIMULATE_RTP_TIMEOUT;
+	public static boolean TEST_OS7_LOG;
+
 	public static boolean TEST_ZRTP_CACHE_MISMATCH;
 	public static boolean TEST_ZRTP_WRONG_ZRTP_HASH;
 	public static boolean TEST_ZRTP_WRONG_HMAC_HELLO;
@@ -34,19 +42,27 @@ public class TestSettings {
 	public static boolean TEST_ZRTP_WRONG_HMAC_CONFIRM;
 	public static boolean TEST_ZRTP_WRONG_HVI;
 	public static boolean TEST_ZRTP_ZID_COLLISION;
-	
+
 	public static boolean KEY_TYPE_DH3K;
 	public static boolean KEY_TYPE_EC25;
 	public static boolean KEY_TYPE_EC38;
 
-	// TODO test case not implemented yet: how to do it?
+	// TODO test case not implemented yet
 	public static boolean TEST_ZRTP_BAD_PUBLIC_KEY;
+
+	public static boolean ZRTP_VERBOSE_LOGGING;
 
 	static {
 		initDefaults();
 	}
-	
+
 	public static void initDefaults() {
+		TEST_AUDIO_FEED_FILE         = false;
+		TEST_AUDIO_FEED_NO_DATA      = false;
+		TEST_DROP_ALL_INCOMING_DATA  = false;
+		TEST_DIGITAL_SIGNATURE       = false;
+		SIMULATE_RTP_TIMEOUT         = false;
+		TEST_OS7_LOG                 = false;
 		TEST_ZRTP_WRONG_HMAC_HELLO   = false;
 		TEST_ZRTP_WRONG_HMAC_COMMIT  = false;
 		TEST_ZRTP_WRONG_HMAC_DHPART1 = false;
@@ -56,11 +72,13 @@ public class TestSettings {
 		TEST_ZRTP_CACHE_MISMATCH     = false;
 		TEST_ZRTP_ZID_COLLISION      = false;
 		TEST_ZRTP_BAD_PUBLIC_KEY     = false;
-		TEST_ZRTP_WRONG_HVI          = false;	
-		
-		KEY_TYPE_DH3K                = false;
-		KEY_TYPE_EC25                = false;
-		KEY_TYPE_EC38                = true;
+		TEST_ZRTP_WRONG_HVI          = false;
+		TEST_SRTP_REPLAY_PROTECTION  = true;
 
-	}	
+		KEY_TYPE_DH3K = false;
+		KEY_TYPE_EC25 = false;
+		KEY_TYPE_EC38 = true;
+
+		ZRTP_VERBOSE_LOGGING = false;
+	}
 }

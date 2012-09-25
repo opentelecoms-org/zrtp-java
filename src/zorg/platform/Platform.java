@@ -21,11 +21,25 @@
  */
 package zorg.platform;
 
-
 /**
  * Factory for platform specific implementation
  */
 public interface Platform {
+
+	/**
+	 * Returns the native phone Addressbook
+	 */
+	AddressBook getAddressBook();
+
+	/**
+	 * Returns platform specific CryptoUtils
+	 * 
+	 * @return
+	 */
+	CryptoUtils getCrypto();
+
+	/** returns reference to persistent cache used by ZRTP */
+	PersistentHashtable getHashtable();
 
 	/**
 	 * Returns a logger object for debugging purposes
@@ -33,27 +47,22 @@ public interface Platform {
 	ZrtpLogger getLogger();
 
 	/**
-	 * Returns the native phone Addressbook 
-	 */
-	AddressBook getAddressBook();
-	
-	/**
-	 * Returns platform specific CryptoUtils
-	 * @return
-	 */
-	CryptoUtils getCrypto();
-
-	/**
 	 * Returns platform specific utils
 	 */
 	Utils getUtils();
 
 	/**
-	 * Returns if ZRTP is running in debug mode 
+	 * Returns if ZRTP is running in debug mode
+	 * 
 	 * @return
 	 */
-	boolean isDebugVersion();
+	boolean isVerboseLogging();
 	
-	/** returns reference to persistent cache used by ZRTP */
-	PersistentHashtable getHashtable();
+
+	/**
+	 * Returns the RandomGenerator instance
+	 * 
+	 * @return
+	 */
+	RandomGenerator getRandomGenerator();
 }

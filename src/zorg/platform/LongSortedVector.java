@@ -26,24 +26,24 @@ package zorg.platform;
  */
 public interface LongSortedVector {
 
-	/** 
+	/** add a new element */
+	void addElement(Long element);
+
+	/** returns index of element */
+	int find(Long element);
+
+	/** returns long stored at specified index */
+	Long getAt(int index);
+
+	/**
 	 * Remove all elements from the vector
 	 */
 	void removeAllElements();
 
-	/** Returns vector size */
-	int size();
-
-	/** returns index of element*/
-	int find(Long element);
-
-	/** add a new element */
-	void addElement(Long element);
-
-	/** returns long stored at specified index*/
-	Long getAt(int index);
-
 	/** remove long stored at specified index */
 	void removeElementAt(int index);
+
+	/** Returns vector size */
+	int size();
 
 }

@@ -24,34 +24,34 @@ package zorg;
 public class CipherType {
 
 	// Cipher type in use
-    private final static int CIPHER_UNDEFINED = 0;
-    private final static int CIPHER_AES1      = 1;
-    private final static int CIPHER_AES3      = 2;
-    
-    private static final byte[] CIPHER_TYPE_UNDEFINED = {};
-    private static final byte[] CIPHER_TYPE_AES1      = { 'A', 'E', 'S', '1' };
-    private static final byte[] CIPHER_TYPE_AES3      = { 'A', 'E', 'S', '3' };
+	private final static int CIPHER_UNDEFINED = 0;
+	private final static int CIPHER_AES1 = 1;
+	private final static int CIPHER_AES3 = 2;
 
-    public static final CipherType UNDEFINED = new CipherType(CIPHER_UNDEFINED);
-    public static final CipherType AES1      = new CipherType(CIPHER_AES1);
-    public static final CipherType AES3      = new CipherType(CIPHER_AES3);
+	private static final byte[] CIPHER_TYPE_UNDEFINED = {};
+	private static final byte[] CIPHER_TYPE_AES1 = { 'A', 'E', 'S', '1' };
+	private static final byte[] CIPHER_TYPE_AES3 = { 'A', 'E', 'S', '3' };
 
-    private int type;
-    
-    public CipherType(int cipherType) {
-	    type = cipherType;
-    }
+	public static final CipherType UNDEFINED = new CipherType(CIPHER_UNDEFINED);
+	public static final CipherType AES1 = new CipherType(CIPHER_AES1);
+	public static final CipherType AES3 = new CipherType(CIPHER_AES3);
+
+	private int type;
+
+	public CipherType(int cipherType) {
+		type = cipherType;
+	}
 
 	public byte[] getType() {
 		switch (type) {
-	        case CIPHER_AES1:
-		        return CIPHER_TYPE_AES1;
-	        case CIPHER_AES3:
-		        return CIPHER_TYPE_AES3;
-	        case CIPHER_UNDEFINED:
-	        default:
-		        return CIPHER_TYPE_UNDEFINED;
-        }
-    }
+		case CIPHER_AES1:
+			return CIPHER_TYPE_AES1;
+		case CIPHER_AES3:
+			return CIPHER_TYPE_AES3;
+		case CIPHER_UNDEFINED:
+		default:
+			return CIPHER_TYPE_UNDEFINED;
+		}
+	}
 
 }

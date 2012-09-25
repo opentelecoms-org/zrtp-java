@@ -22,21 +22,56 @@
 package zorg.platform;
 
 /**
- * Random generator produces randomness in different types and quantity 
+ * Random generator produces randomness in different types and quantity
  */
 public interface RandomGenerator {
 
-	/** fill data buffer with random bytes */
-	void getBytes(byte[] data);
-
-	void getBytes(byte[] data, int offset, int length);
-	
-	byte[] getBytes(int length);
-	
-	/** get a random int */
-	int getInt();
-
+	/** get a random byte */
 	byte getByte();
 
-	
+    /**
+     * Generates random bytes filling the given buffer entirely
+     * 
+     * @param buffer The byte array to fill with random bytes
+     */
+	void getBytes(byte[] data);
+
+    /**
+     * Inserts random bytes into the given buffer starting at the specified 
+     * array index offset
+     * 
+     * @param buffer The buffer to store the random bytes
+     * @param offset The start, or initial position, of the data within the buffer
+     * @param length The number of random bytes to store
+
+     */
+	void getBytes(byte[] data, int offset, int length);
+
+    /**
+     * Generate a specified length of random bytes, returning them as a byte
+     * array of the specified size
+     *
+     * @param length The number of random bytes to generate
+     * @return A byte array containing the random bytes
+     */
+	byte[] getBytes(int length);
+
+    /**
+     * Returns a random integer
+     *
+     * @return A random value of type int
+     */
+	int getInt();
+
+    /**
+     * Seed the random generator with 2 least significant bits of randomly picked
+     * bytes within the provided PCM audio data
+     *
+     * @param data PCM audio data
+     */
+	void seedUsingPcmAudio(byte[] mEntropyBytes);
+
+	/** returns true if the RandomGenerator is inizialized */
+	boolean isInitialized();
+
 }

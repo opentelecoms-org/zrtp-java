@@ -25,28 +25,43 @@ import zorg.KeyAgreementType;
 import zorg.ZrtpException;
 
 /**
- * Interface for Diffie Hellman calculation. It supports:
- * * DH 3K
- * * ECDH-256
- * * ECDH-384
+ * Interface for Diffie Hellman calculation. It supports: * DH 3K * ECDH-256 *
+ * ECDH-384
  */
 public interface DiffieHellmanSuite {
-
-	/** choose DH algorithm */
-	void setAlgorithm(KeyAgreementType dhMode);
 
 	/** reset keys */
 	void clear();
 
-	/** extratc public key 
+	/**
+	 * Diffie Hellman key calculation
 	 * 
-	 * @param data public key is written to thiss buffer 
-	 * @param offset public written at offest
+	 * @param aMsg - DHPartX message
+	 * @param offset
+	 * @param isLegacyClient - true if the farSide is a legacy ZRTP client
+	 * @return DH calculation
+	 * @throws ZrtpException
+	 */
+	byte[] getDhResult(byte[] aMsg, int offset, boolean isLegacyClient) throws ZrtpException;
+
+	/** choose DH algorithm */
+	void setAlgorithm(KeyAgreementType dhMode);
+
+	/**
+	 * Set the internal logger
+	 * 
+	 * @param logger a ZrtpLogger implementation
+	 */
+	void setLogger(ZrtpLogger logger);
+
+	/**
+	 * extratc public key
+	 * 
+	 * @param data
+	 *            public key is written to thiss buffer
+	 * @param offset
+	 *            public written at offest
 	 * @throws ZrtpException
 	 */
 	void writePublicKey(byte[] data, int offset) throws ZrtpException;
-	
-	byte[] getDhResult(byte[] aMsg, int offset) throws ZrtpException;
-
-	void setLogger(ZrtpLogger logger);
 }

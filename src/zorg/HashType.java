@@ -21,76 +21,75 @@
  */
 package zorg;
 
-
 public class HashType {
 
 	private final static int HASH_UNDEFINED = 0;
-	private final static int HASH_SHA_256   = 1;
-    private final static int HASH_SHA_384   = 2;
+	private final static int HASH_SHA_256 = 1;
+	private final static int HASH_SHA_384 = 2;
 
 	private static final byte[] HASH_TYPE_UNDEFINED = {};
-	private static final byte[] HASH_TYPE_256       = { 'S', '2', '5', '6' };
-    private static final byte[] HASH_TYPE_384       = { 'S', '3', '8', '4' };
+	private static final byte[] HASH_TYPE_256 = { 'S', '2', '5', '6' };
+	private static final byte[] HASH_TYPE_384 = { 'S', '3', '8', '4' };
 
-    public static HashType UNDEFINED = new HashType(HASH_UNDEFINED);
-    public static HashType SHA256    = new HashType(HASH_SHA_256);
-	public static HashType SHA384    = new HashType(HASH_SHA_384);
+	public static HashType UNDEFINED = new HashType(HASH_UNDEFINED);
+	public static HashType SHA256 = new HashType(HASH_SHA_256);
+	public static HashType SHA384 = new HashType(HASH_SHA_384);
+
+	private int numType;
+
+	private String name;
 
 	public HashType(int hashType) {
-        numType = hashType;
-        name = new String(getType());
-    }
-
-	public byte[] getType() {
-		switch (numType) {
-	        case HASH_SHA_256:
-		        return HASH_TYPE_256;
-	        case HASH_SHA_384:
-	        	return HASH_TYPE_384;
-	        case HASH_UNDEFINED:
-	        default:
-	        	return HASH_TYPE_UNDEFINED;
-        }
+		numType = hashType;
+		name = new String(getType());
 	}
-	
-	
-	
-    private int numType;
-    private String name;
 
-    public String toString() {
-    	return name;
-    }
-    
-	public int hashCode() {
-	    final int prime = 31;
-	    int result = 1;
-	    result = prime * result + numType;
-	    return result;
-    }
 	public boolean equals(Object obj) {
-	    if (this == obj)
-		    return true;
-	    if (obj == null)
-		    return false;
-	    if (getClass() != obj.getClass())
-		    return false;
-	    HashType other = (HashType) obj;
-	    if (numType != other.numType)
-		    return false;
-	    return true;
-    }
+		if (this == obj)
+			return true;
+		if (obj == null)
+			return false;
+		if (getClass() != obj.getClass())
+			return false;
+		HashType other = (HashType) obj;
+		if (numType != other.numType)
+			return false;
+		return true;
+	}
 
 	public int getLength() {
 		switch (numType) {
-	        case HASH_SHA_256:
-		        return 256;
-	        case HASH_SHA_384:
-	        	return 384;
-	        case HASH_UNDEFINED:
-	        default:
-	        	return 0;
+		case HASH_SHA_256:
+			return 256;
+		case HASH_SHA_384:
+			return 384;
+		case HASH_UNDEFINED:
+		default:
+			return 0;
 		}
-    }
+	}
+
+	public byte[] getType() {
+		switch (numType) {
+		case HASH_SHA_256:
+			return HASH_TYPE_256;
+		case HASH_SHA_384:
+			return HASH_TYPE_384;
+		case HASH_UNDEFINED:
+		default:
+			return HASH_TYPE_UNDEFINED;
+		}
+	}
+
+	public int hashCode() {
+		final int prime = 31;
+		int result = 1;
+		result = prime * result + numType;
+		return result;
+	}
+
+	public String toString() {
+		return name;
+	}
 
 }
