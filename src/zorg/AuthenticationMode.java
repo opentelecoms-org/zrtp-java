@@ -29,5 +29,10 @@ public class AuthenticationMode {
 	public String name() {
 		return new String(getSymbol());
 	}
+	
+	@Override
+	public String toString() {
+		return name();
+	}
 
 }

@@ -48,5 +48,14 @@ public class CipherType {
 	public int getSaltBits() {
 		return saltBits;
 	}
+	
+	public String name() {
+		return new String(symbol);
+	}
+
+	@Override
+	public String toString() {
+		return name();
+	}
 
 }
