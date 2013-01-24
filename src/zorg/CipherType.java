@@ -19,39 +19,34 @@
  * For more information, please contact PrivateWave Italia S.p.A. at
  * address zorg@privatewave.com or http://www.privatewave.com 
  */
-package zorg;
+package org.opentelecoms.media.rtp.secure;
 
-public class CipherType {
+public enum CipherType {
 
-	// Cipher type in use
-	private final static int CIPHER_UNDEFINED = 0;
-	private final static int CIPHER_AES1 = 1;
-	private final static int CIPHER_AES3 = 2;
+	UNDEFINED ( null, 0, 0 ),
+	AES1 ( new byte[] { 'A', 'E', 'S', '1' }, 128, 112 ),
+	AES3 ( new byte[] { 'A', 'E', 'S', '3' }, 256, 112);
+	
+    private byte[] symbol;
+	private int masterKeyBits;
+	private int saltBits;
 
-	private static final byte[] CIPHER_TYPE_UNDEFINED = {};
-	private static final byte[] CIPHER_TYPE_AES1 = { 'A', 'E', 'S', '1' };
-	private static final byte[] CIPHER_TYPE_AES3 = { 'A', 'E', 'S', '3' };
-
-	public static final CipherType UNDEFINED = new CipherType(CIPHER_UNDEFINED);
-	public static final CipherType AES1 = new CipherType(CIPHER_AES1);
-	public static final CipherType AES3 = new CipherType(CIPHER_AES3);
-
-	private int type;
-
-	public CipherType(int cipherType) {
-		type = cipherType;
+	CipherType(byte[] symbol, int masterKeyBits, int saltBits) {
+	    this.symbol = symbol;
+	    this.masterKeyBits = masterKeyBits;
+	    this.saltBits = saltBits;
+    }
+	
+	public byte[] getSymbol() {
+		return symbol;
 	}
 
-	public byte[] getType() {
-		switch (type) {
-		case CIPHER_AES1:
-			return CIPHER_TYPE_AES1;
-		case CIPHER_AES3:
-			return CIPHER_TYPE_AES3;
-		case CIPHER_UNDEFINED:
-		default:
-			return CIPHER_TYPE_UNDEFINED;
-		}
+	public int getMasterKeyBits() {
+		return masterKeyBits;
+	}
+
+	public int getSaltBits() {
+		return saltBits;
 	}
 
 }

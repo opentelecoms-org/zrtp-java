@@ -23,6 +23,7 @@ package zorg;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
+import java.util.LinkedList;
 import java.util.Timer;
 import java.util.TimerTask;
 
@@ -1538,7 +1539,7 @@ public class ZRTP {
 			for (int i = 0; i < cipherCount; i++) {
 				// Only need to check for AES3 as, if its not there, we'll
 				// always use AES1
-				if (platform.getUtils().equals(CipherType.AES3.getType(), 0,
+				if (platform.getUtils().equals(CipherType.AES3.getSymbol(), 0,
 						aMsg, cipherPos + i * 4, 4)) {
 					cipherInUse = CipherType.AES3;
 				}
@@ -1883,6 +1884,28 @@ public class ZRTP {
 	 *            byte array containing the ZRTP message
 	 */
 	public void handleIncomingMessage(byte[] data, int offset, int len) {
+		synchronized(messageQueue) {
+			messageQueue.add(new IncomingMessage(data, offset, len));
+		}
+		synchronized(lock) {
+			lock.notifyAll();
+		}
+	}
+
+	protected void processQueuedMessages() {
+		IncomingMessage msg = null;
+		while(true) {
+			synchronized(messageQueue) {
+				msg = messageQueue.poll();
+				if(msg == null)
+					return;
+			}
+			byte[] data = msg.getData();
+			respondToMessage(data, 0, data.length);
+		}
+	}
+		
+	protected void respondToMessage(byte[] data, int offset, int len) {
 		lastPacketArrival = System.currentTimeMillis();
 		if (platform.isVerboseLogging()) {
 			logZrtpMessage("ZRTP received", data, offset, len);
@@ -2216,6 +2239,7 @@ public class ZRTP {
 						logString("Thread Interrupted E:" + e);
 					}
 				}
+				processQueuedMessages();
 			}
 			endSession();
 			logString("Thread Ending");
@@ -2257,7 +2281,7 @@ public class ZRTP {
 			baos.write(localZID);
 			byte[] hash = dhMode.hash.getType();
 			baos.write(hash); // We only use SHA-256
-			baos.write(cipherInUse.getType());
+			baos.write(cipherInUse.getSymbol());
 			baos.write(authMode.getSymbol());
 			baos.write(dhMode.getType());
 			baos.write(SasType.B256.getType());
@@ -2317,6 +2341,18 @@ public class ZRTP {
 	// private synchronized void sendPingACK() throws IOException {
 	// //TODO send Ping Ack not implemented
 	// }
+	
+	class IncomingMessage {
+		byte[] data;
+		public IncomingMessage(byte[] _data, int offset, int len) {
+			this.data = new byte[len];
+			System.arraycopy(_data, offset, this.data, 0, len);
+		}
+		public byte[] getData() {
+			return data;
+		}
+	}
+	LinkedList<IncomingMessage> messageQueue = new LinkedList<IncomingMessage>();
 
 	private synchronized void sendConfirm2() throws IOException,
 			CryptoException {
@@ -2572,9 +2608,9 @@ public class ZRTP {
 			msgValid = false;
 			logString("validateCommitMessage, Found invalid hash type - "
 					+ (new String(data, offset + 56, 4)));
-		} else if (!platform.getUtils().equals(CipherType.AES1.getType(), 0,
+		} else if (!platform.getUtils().equals(CipherType.AES1.getSymbol(), 0,
 				data, offset + 60, 4)
-				&& !platform.getUtils().equals(CipherType.AES3.getType(), 0,
+				&& !platform.getUtils().equals(CipherType.AES3.getSymbol(), 0,
 						data, offset + 60, 4)) {
 			msgValid = false;
 			logString("validateCommitMessage, Found invalid cipher type - "
