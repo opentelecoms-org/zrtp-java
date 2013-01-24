@@ -155,6 +155,13 @@ public class ZRTP {
 	private final static int ZRTP_ERROR_PROTOCOL_TIMEOUT          = 0xB0;
 	private final static int ZRTP_ERROR_UNALLOWED_GO_CLEAR_RCVD   = 0x100;
 	
+	public static final int HMAC_AUTH_SIZE_BYTES_ZRTP_DEFAULT = 4; 	// ZRTP Spec 4.5.3 -
+																	// always use 32 bit
+																	// HMAC for
+																	// Authentication,
+															// but SRTP also requires support
+															// for 10 bytes
+	
 	// Current implementation support only one ECDH suite, EC25 or EC38. Default is EC38
 	private boolean DH_MODE_EC_USE_256 = TestSettings.KEY_TYPE_EC25;
 
