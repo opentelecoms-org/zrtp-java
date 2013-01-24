@@ -2686,4 +2686,8 @@ public class ZRTP {
 	public AuthenticationMode getAuthenticationMode() {
 		return authMode;
 	}
+	
+	public CipherType getCipherType() {
+		return cipherInUse;
+	}
 }
