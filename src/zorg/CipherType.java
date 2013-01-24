@@ -21,11 +21,11 @@
  */
 package zorg;
 
-public enum CipherType {
+public class CipherType {
 
-	UNDEFINED ( null, 0, 0 ),
-	AES1 ( new byte[] { 'A', 'E', 'S', '1' }, 128, 112 ),
-	AES3 ( new byte[] { 'A', 'E', 'S', '3' }, 256, 112);
+	public final static CipherType UNDEFINED = new CipherType( null, 0, 0 );
+	public final static CipherType AES1 = new CipherType( new byte[] { 'A', 'E', 'S', '1' }, 128, 112 );
+	public final static CipherType 	AES3 = new CipherType( new byte[] { 'A', 'E', 'S', '3' }, 256, 112);
 	
     private byte[] symbol;
 	private int masterKeyBits;
