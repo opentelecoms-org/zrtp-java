@@ -1,11 +1,10 @@
 package zorg;
 
-public enum AuthenticationMode {
+public class AuthenticationMode {
 	
-
-	UNDEFINED ( null, 0 ),
-	HS80 ( new byte[] { 'H', 'S', '8', '0' }, 80 ),
-	HS32 ( new byte[] { 'H', 'S', '3', '2' }, 32 );
+	public final static AuthenticationMode UNDEFINED = new AuthenticationMode(null, 0 );
+	public final static AuthenticationMode HS80 = new AuthenticationMode(new byte[] { 'H', 'S', '8', '0' }, 80 );
+	public final static AuthenticationMode HS32 = new AuthenticationMode(new byte[] { 'H', 'S', '3', '2' }, 32 );
 	
     private byte[] symbol;
 	private int tagBits;
@@ -25,6 +24,10 @@ public enum AuthenticationMode {
 
 	public int getTagBytes() {
 		return getTagBits() / 8;
+	}
+	
+	public String name() {
+		return new String(getSymbol());
 	}
 
 }
