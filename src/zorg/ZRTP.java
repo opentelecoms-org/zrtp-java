@@ -578,13 +578,13 @@ public class ZRTP {
 		// Now deriving the rest of the keys from s0 and KDF-Context (Section
 		// 4.5.3)
 		byte[] srtpKeyI = getKeyFromKDF(s0, "Initiator SRTP master key",
-				kdfContext, 256); // TODO negotiated AES length
+				kdfContext, cipherInUse.getMasterKeyBits());
 		byte[] srtpSaltI = getKeyFromKDF(s0, "Initiator SRTP master salt",
-				kdfContext, 112);
+				kdfContext, cipherInUse.getSaltBits());
 		byte[] srtpKeyR = getKeyFromKDF(s0, "Responder SRTP master key",
-				kdfContext, 256);// TODO negotiated AES length
+				kdfContext, cipherInUse.getMasterKeyBits());
 		byte[] srtpSaltR = getKeyFromKDF(s0, "Responder SRTP master salt",
-				kdfContext, 112);
+				kdfContext, cipherInUse.getSaltBits());
 		byte[] sasHash = getKeyFromKDF(s0, "SAS", kdfContext, 256);
 		newRS = getKeyFromKDF(s0, "retained secret", kdfContext, 256);
 		if (platform.getLogger().isEnabled()) {
@@ -808,13 +808,14 @@ public class ZRTP {
 			keyTypes += "DH3k";
 			++kc;
 		}
+		int cipherCount = ciphers.length() / 4;
 		int authModeCount = authTags.length() / 4;
 		String sasTypes = new String("B256"); // 32 bit & 256 bit sas supported
 		int sasTypeCount = sasTypes.length() / 4;
 		// Signature type field will be length 0 as no signatures used
 		baos.write(0x00); // SMP flags all set to zero
 		baos.write(hc); // hc = hashes count
-		baos.write(0x20 | authModeCount); // cc = cypher count = 2
+		baos.write((cipherCount << 4) | authModeCount); // cc = cypher count = 2
 		baos.write((kc << 4) | sasTypeCount); // kc = key agreement, sc = SAS count = 1
 		baos.write(hashes.getBytes());
 		baos.write(ciphers.getBytes());
