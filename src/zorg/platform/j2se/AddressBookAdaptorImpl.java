@@ -23,14 +23,14 @@ package zorg.platform.j2se;
 
 import zorg.platform.AddressBook;
 
-public class AndroidAddressBookAdaptor implements AddressBook {
+public class AddressBookAdaptorImpl implements AddressBook {
 	
 	/* (non-Javadoc)
 	 * @see zorg.platform.AddressBook#isInAddressBook(java.lang.String)
 	 */
 	@Override
 	public boolean isInAddressBook(String phoneNumber) {
-		AndroidContact c = AndroidContact.lookupByNumber(phoneNumber);
+		ContactImpl c = ContactImpl.lookupByNumber(phoneNumber);
 		return c != null;
 	}
 
@@ -39,7 +39,7 @@ public class AndroidAddressBookAdaptor implements AddressBook {
 	 */
 	@Override
 	public boolean matchingNumbers(String number1, String number2) {
-		boolean matching = AndroidContact.matchingNumbers(number1, number2);
+		boolean matching = ContactImpl.matchingNumbers(number1, number2);
 		return matching;
 	}
 

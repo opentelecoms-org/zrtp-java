@@ -38,7 +38,7 @@ import zorg.platform.EncryptorSuite;
 import zorg.platform.HMAC;
 import zorg.platform.RandomGenerator;
 
-public class AndroidCryptoUtils implements CryptoUtils {
+public class CryptoUtilsImpl implements CryptoUtils {
 
 	private RandomGenerator randomGenerator;
 
@@ -120,7 +120,7 @@ public class AndroidCryptoUtils implements CryptoUtils {
 		try {
 			return new BCDigest(MessageDigest.getInstance("SHA1", "ZBC"));
 		} catch (GeneralSecurityException e) {
-			AndroidPlatform.getInstance().getLogger().logException(e.getMessage());
+			PlatformImpl.getInstance().getLogger().logException(e.getMessage());
 			return null;
 		}
 	}
@@ -133,7 +133,7 @@ public class AndroidCryptoUtils implements CryptoUtils {
 		try {
 			return new BCDigest(MessageDigest.getInstance("SHA256", "ZBC"));
 		} catch (GeneralSecurityException e) {
-			AndroidPlatform.getInstance().getLogger().logException(e.getMessage());
+			PlatformImpl.getInstance().getLogger().logException(e.getMessage());
 			return null;
 		}
 	}
@@ -146,7 +146,7 @@ public class AndroidCryptoUtils implements CryptoUtils {
 		try {
 			return new BCDigest(MessageDigest.getInstance("SHA384", "ZBC"));
 		} catch (GeneralSecurityException e) {
-			AndroidPlatform.getInstance().getLogger().logException(e.getMessage());
+			PlatformImpl.getInstance().getLogger().logException(e.getMessage());
 			return null;
 		}
 	}
@@ -168,7 +168,7 @@ public class AndroidCryptoUtils implements CryptoUtils {
 		try {
 			return new BCHmacAdapter(hmacKey, "SHA1");
 		} catch (Exception e) {
-			AndroidPlatform.getInstance().getLogger().logException(e.getMessage());
+			PlatformImpl.getInstance().getLogger().logException(e.getMessage());
 			return null;
 		}
 	}

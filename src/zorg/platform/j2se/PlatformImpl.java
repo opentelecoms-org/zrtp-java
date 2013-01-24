@@ -32,7 +32,7 @@ import zorg.platform.RandomGenerator;
 import zorg.platform.Utils;
 import zorg.platform.ZrtpLogger;
 
-public class AndroidPlatform implements Platform {
+public class PlatformImpl implements Platform {
 
 	private Utils utils ;
 	private ZrtpLogger logger;
@@ -46,16 +46,16 @@ public class AndroidPlatform implements Platform {
 	
 	private boolean isDebugBuild;
 	
-	private AndroidPlatform (PlatformFactory androidFactory,  Application applicationInstance) {
+	private PlatformImpl (PlatformFactory androidFactory,  Application applicationInstance) {
 		this.applicationInstance = applicationInstance;
 		
 		logger = androidFactory.getLogger();
-		addressbook = new AndroidAddressBookAdaptor();
-		utils = new AndroidUtils();
+		addressbook = new AddressBookAdaptorImpl();
+		utils = new UtilsImpl();
 		storage = new ZrtpCacheDB(applicationInstance, androidFactory.getLogger());
-		cryptoUtils = new AndroidCryptoUtils();
+		cryptoUtils = new CryptoUtilsImpl();
 		
-		rg 		= AndroidRandomGenerator.getInstance();
+		rg 		= RandomGeneratorImpl.getInstance();
 		cryptoUtils.setRandomGenerator(rg);
 
 		isDebugBuild = androidFactory.getDebugFlag();		
@@ -68,7 +68,7 @@ public class AndroidPlatform implements Platform {
 	 * @param applicationInstance the android.app.Application instance
 	 */
 	public static void init(PlatformFactory androidFactory, Application applicationInstance) {
-		instance = new AndroidPlatform(androidFactory, applicationInstance);
+		instance = new PlatformImpl(androidFactory, applicationInstance);
 	}
 	
 	public static Platform getInstance() {

@@ -26,7 +26,7 @@ import java.util.Arrays;
 import zorg.platform.LongSortedVector;
 import zorg.platform.Utils;
 
-public class AndroidUtils implements Utils {
+public class UtilsImpl implements Utils {
 
 	@Override
 	public String byteToHexString(byte[] buffer) {

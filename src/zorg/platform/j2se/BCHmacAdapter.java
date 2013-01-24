@@ -38,7 +38,7 @@ public class BCHmacAdapter implements HMAC {
 			hmac = Mac.getInstance("Hmac" + hashAlgorithm, "ZBC");
 			hmac.init(key);
 		} catch (Exception e) {
-			AndroidPlatform.getInstance().getLogger().logException(e.getMessage());
+			PlatformImpl.getInstance().getLogger().logException(e.getMessage());
 		}
 	}
 	
@@ -54,7 +54,7 @@ public class BCHmacAdapter implements HMAC {
 			hmac.doFinal(res, 0);
 			return res;
 		} catch (Exception e) {
-			AndroidPlatform.getInstance().getLogger().logException(e.getMessage());
+			PlatformImpl.getInstance().getLogger().logException(e.getMessage());
 			return null;
 		}
 	}

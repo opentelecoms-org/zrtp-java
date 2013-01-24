@@ -23,21 +23,21 @@ package zorg.platform.j2se;
 
 import java.security.SecureRandom;
 
-public class AndroidRandomGenerator implements zorg.platform.RandomGenerator {
+public class RandomGeneratorImpl implements zorg.platform.RandomGenerator {
 
-    private static AndroidRandomGenerator instance;
+    private static RandomGeneratorImpl instance;
     private static SecureRandom randomGenerator = null;
 	private boolean initialized = false;
 
-    private AndroidRandomGenerator() {
+    private RandomGeneratorImpl() {
         instance = this;
         randomGenerator = new SecureRandom();
         seed();
     }
 
-    public static AndroidRandomGenerator getInstance() {
+    public static RandomGeneratorImpl getInstance() {
         if (instance == null) {
-            new AndroidRandomGenerator();
+            new RandomGeneratorImpl();
         }
         return instance;
     }

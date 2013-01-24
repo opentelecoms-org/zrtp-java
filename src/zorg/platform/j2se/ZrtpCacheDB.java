@@ -86,7 +86,7 @@ public class ZrtpCacheDB implements PersistentHashtable {
 
 		if (cursor.moveToFirst()) {
 			do {
-				entry = new AndroidCacheEntry(convertFromDBFormat(cursor.getString(0)),
+				entry = new CacheEntryImpl(convertFromDBFormat(cursor.getString(0)),
 						cursor.getBlob(1),
 						cursor.getString(2));
 			} while (cursor.moveToNext());
@@ -178,7 +178,7 @@ public class ZrtpCacheDB implements PersistentHashtable {
 	}
 	
 	private String convertToDBFormat(String original) {
-		return AndroidPlatform.getInstance().getUtils().byteToHexString(original.getBytes());
+		return PlatformImpl.getInstance().getUtils().byteToHexString(original.getBytes());
 	}
 
 	private static class OpenHelper extends SQLiteOpenHelper {

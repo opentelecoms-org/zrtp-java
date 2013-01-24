@@ -43,7 +43,7 @@ public class ContactLookup {
 		if (!number.equals("")) {
 			if (number.startsWith("+"))
 				number = number.substring(1);
-			Cursor c = ((AndroidPlatform) AndroidPlatform.getInstance()).getApplication()
+			Cursor c = ((PlatformImpl) PlatformImpl.getInstance()).getApplication()
 					.getApplicationContext()
 					.getContentResolver()
 					.query(Uri.withAppendedPath(PhoneLookup.CONTENT_FILTER_URI,

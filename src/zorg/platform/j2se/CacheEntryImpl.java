@@ -23,7 +23,7 @@ package zorg.platform.j2se;
 
 import zorg.ZrtpCacheEntry;
 
-public class AndroidCacheEntry implements ZrtpCacheEntry {
+public class CacheEntryImpl implements ZrtpCacheEntry {
 
 	private static String TEST_VALUE = "E84FE07E054660FFF5CF90B4,null";
 	private static String TEST_KEY = "4D795A4944";
@@ -32,7 +32,7 @@ public class AndroidCacheEntry implements ZrtpCacheEntry {
 	private byte[] data;
 	private String number;
 
-	public AndroidCacheEntry() {
+	public CacheEntryImpl() {
 	}
 
 	/**
@@ -41,7 +41,7 @@ public class AndroidCacheEntry implements ZrtpCacheEntry {
 	 * @param data Raw data
 	 * @param phoneNumber Client phoneNumber
 	 */
-	public AndroidCacheEntry(String zid, byte[] data, String phoneNumber) {
+	public CacheEntryImpl(String zid, byte[] data, String phoneNumber) {
 		this.zid = zid;
 		this.data = data;
 		this.number = phoneNumber;
@@ -79,7 +79,7 @@ public class AndroidCacheEntry implements ZrtpCacheEntry {
 	 * @return The string representation 
 	 */
 	public String getValue() {
-		return AndroidPlatform.getInstance().getUtils().byteToHexString(getData()) + "," + getNumber();
+		return PlatformImpl.getInstance().getUtils().byteToHexString(getData()) + "," + getNumber();
 	}
 
 	/* (non-Javadoc)
@@ -121,7 +121,7 @@ public class AndroidCacheEntry implements ZrtpCacheEntry {
 			buffer[i] = (byte) Short.parseShort(
 					data.substring(i * 2, i * 2 + 2), 16);
 		}
-		AndroidCacheEntry entry = new AndroidCacheEntry(key, buffer, number);
+		CacheEntryImpl entry = new CacheEntryImpl(key, buffer, number);
 		return entry;
 	}
 
