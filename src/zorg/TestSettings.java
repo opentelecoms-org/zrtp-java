@@ -75,9 +75,9 @@ public class TestSettings {
 		TEST_ZRTP_WRONG_HVI          = false;
 		TEST_SRTP_REPLAY_PROTECTION  = true;
 
-		KEY_TYPE_DH3K = false;
+		KEY_TYPE_DH3K = true;
 		KEY_TYPE_EC25 = false;
-		KEY_TYPE_EC38 = true;
+		KEY_TYPE_EC38 = false;
 
 		ZRTP_VERBOSE_LOGGING = false;
 	}

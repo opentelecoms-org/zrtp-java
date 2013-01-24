@@ -2221,7 +2221,7 @@ public class ZRTP {
 
 			try {
 				// TODO: create after algorithm negotiation
-				dhSuite.setAlgorithm(KeyAgreementType.ECDH384);
+				dhSuite.setAlgorithm(KeyAgreementType.DH3K);
 				// Initialize the retransmission timer interval
 				timerInterval = T1_INITIAL_INTERVAL;
 				sendHello();
