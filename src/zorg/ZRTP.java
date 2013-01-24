@@ -155,7 +155,8 @@ public class ZRTP {
 	private final static int ZRTP_ERROR_PROTOCOL_TIMEOUT          = 0xB0;
 	private final static int ZRTP_ERROR_UNALLOWED_GO_CLEAR_RCVD   = 0x100;
 	
-	public static final int HMAC_AUTH_SIZE_BYTES_ZRTP_DEFAULT = 4; 	// ZRTP Spec 4.5.3 -
+	public static final AuthenticationMode
+		HMAC_AUTH_SIZE_BYTES_ZRTP_DEFAULT = AuthenticationMode.HS32; 	// ZRTP Spec 4.5.3 -
 																	// always use 32 bit
 																	// HMAC for
 																	// Authentication,
@@ -285,8 +286,6 @@ public class ZRTP {
 	private static final byte[] mMsgConf2ACK = { 0x50, 0x5a, 0x00, 0x03, 'C', 'o', 'n', 'f', '2', 'A', 'C', 'K' };
 	private static final byte[] mMsgErrorACK = { 0x50, 0x5a, 0x00, 0x03, 'E', 'r', 'r', 'o', 'r', 'A', 'C', 'K' };
 
-	// Commit message parts
-	private static final byte[] AUTH_TYPE_32 = { 'H', 'S', '3', '2' };
 	// shared secret MAC calculation constants
 	private static final byte[] mResponderBytes = { 'R', 'e', 's', 'p', 'o', 'n', 'd', 'e', 'r' };
 	private static final byte[] mInitiatorBytes = { 'I', 'n', 'i', 't', 'i', 'a', 't', 'o', 'r' };
@@ -297,6 +296,8 @@ public class ZRTP {
 	private final Platform platform;
 
 	private DiffieHellmanSuite dhSuite;
+	
+	private AuthenticationMode authMode = HMAC_AUTH_SIZE_BYTES_ZRTP_DEFAULT;
 
 	/**
 	 * Constructor
@@ -790,7 +791,7 @@ public class ZRTP {
 			++hc;
 		}
 		String ciphers = new String("AES1AES3"); // AES-128 & 256
-		String authTags = new String("HS32"); // HMAC-SHA1 32
+		String authTags = authMode.name(); // HMAC-SHA1 32
 		String keyTypes = "";
 		byte kc = 0;
 		if (TestSettings.KEY_TYPE_EC38) {
@@ -806,12 +807,14 @@ public class ZRTP {
 			keyTypes += "DH3k";
 			++kc;
 		}
+		int authModeCount = authTags.length() / 4;
 		String sasTypes = new String("B256"); // 32 bit & 256 bit sas supported
+		int sasTypeCount = sasTypes.length() / 4;
 		// Signature type field will be length 0 as no signatures used
 		baos.write(0x00); // SMP flags all set to zero
 		baos.write(hc); // hc = hashes count
-		baos.write(0x21); // cc = cypher count = 2, ac = auth tag count = 1
-		baos.write((kc << 4) | 0x01); // kc = key agreement, sc = SAS count = 1
+		baos.write(0x20 | authModeCount); // cc = cypher count = 2
+		baos.write((kc << 4) | sasTypeCount); // kc = key agreement, sc = SAS count = 1
 		baos.write(hashes.getBytes());
 		baos.write(ciphers.getBytes());
 		baos.write(authTags.getBytes());
@@ -1543,7 +1546,16 @@ public class ZRTP {
 					logString("HELLO MSG - CIPHER: "
 							+ new String(aMsg, cipherPos + i * 4, 4));
 				}
-
+				
+				authMode = AuthenticationMode.HS32;
+				for(int j = 0; j < authCount ; j++) {
+					if(platform.getUtils().equals(AuthenticationMode.HS80.getSymbol(), 0, aMsg, authPos + j*4, 4)) {
+						authMode = AuthenticationMode.HS80;
+					}
+					if(platform.isVerboseLogging()) {
+						logString("HELLO MSG - AUTH MODE: " + new String(aMsg, authPos + j*4, 4));
+					}
+				}
 			}
 			
 			isLegacyAttributeList &= LegacyClientUtils.checkCipher(platform ,aMsg, cipherPos, cipherCount);
@@ -2246,7 +2258,7 @@ public class ZRTP {
 			byte[] hash = dhMode.hash.getType();
 			baos.write(hash); // We only use SHA-256
 			baos.write(cipherInUse.getType());
-			baos.write(AUTH_TYPE_32); // We only use HMAC-SHA1 32
+			baos.write(authMode.getSymbol());
 			baos.write(dhMode.getType());
 			baos.write(SasType.B256.getType());
 			baos.write(createHvi());
@@ -2567,8 +2579,10 @@ public class ZRTP {
 			msgValid = false;
 			logString("validateCommitMessage, Found invalid cipher type - "
 					+ (new String(data, offset + 60, 4)));
-		} else if (!platform.getUtils().equals(AUTH_TYPE_32, 0, data,
-				offset + 64, 4)) {
+		} else if (!platform.getUtils().equals(AuthenticationMode.HS80.getSymbol(), 0, data,
+				offset + 64, 4) &&
+				!platform.getUtils().equals(AuthenticationMode.HS32.getSymbol(), 0, data, 
+						offset + 64, 4)) {
 			msgValid = false;
 			logString("validateCommitMessage, Found invalid auth type - "
 					+ (new String(data, offset + 64, 4)));
@@ -2631,5 +2645,9 @@ public class ZRTP {
 			byte[] mac = createSHAHMAC(msg, 0, msg.length, secret);
 			System.arraycopy(mac, 0, dhPart, off, 8);
 		}
+	}
+	
+	public AuthenticationMode getAuthenticationMode() {
+		return authMode;
 	}
 }
