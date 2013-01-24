@@ -98,6 +98,8 @@ public class ZRTP {
 	public final static String VERSION = "1.10";
 	// Relevant part of version field, used for version negotiation
 	public final static String VERSION_PREFIX = VERSION.substring(0, 3);
+	// the magic cookie to insert in the timestamp field of an RTP packet carrying a ZRTP payload
+	public static final long ZRTP_MAGIC_COOKIE = 0x5a525450;
 
 	public static final String CLIENT_ID_LEGACY = "KhamsaPrivateGSM";
 	public static final String CLIENT_ID_RFC    = "PWaveIPrivateGSM";
