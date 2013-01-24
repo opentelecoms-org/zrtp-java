@@ -59,11 +59,11 @@ public class PlatformImpl implements Platform {
 	/**
 	 * Init the Android ZRTP Platform
 	 * 
-	 * @param androidFactory an Android Platform implementation
+	 * @param platformFactory an Android Platform implementation
 	 * @param applicationInstance the android.app.Application instance
 	 */
-	public static void init(PlatformFactory androidFactory) {
-		instance = new PlatformImpl(androidFactory);
+	public static void init(PlatformFactory platformFactory) {
+		instance = new PlatformImpl(platformFactory);
 	}
 	
 	public static Platform getInstance() {
