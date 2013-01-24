@@ -81,8 +81,8 @@ public class LegacyClientUtils {
 		if (cipherCount != 2)
 			return false;
 		
-		boolean result = (platform.getUtils().equals(CipherType.AES3.getType(), 0, aMsg, cipherPos , 4)  &&
-			    platform.getUtils().equals(CipherType.AES1.getType(), 0, aMsg, cipherPos + 1 * 4, 4));
+		boolean result = (platform.getUtils().equals(CipherType.AES3.getSymbol(), 0, aMsg, cipherPos , 4)  &&
+			    platform.getUtils().equals(CipherType.AES1.getSymbol(), 0, aMsg, cipherPos + 1 * 4, 4));
 		
 		return result;
 	}

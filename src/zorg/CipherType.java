@@ -19,7 +19,7 @@
  * For more information, please contact PrivateWave Italia S.p.A. at
  * address zorg@privatewave.com or http://www.privatewave.com 
  */
-package org.opentelecoms.media.rtp.secure;
+package zorg;
 
 public enum CipherType {
 
