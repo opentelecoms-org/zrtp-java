@@ -10,7 +10,6 @@ import org.bouncycastle.jce.provider.BouncyCastleProvider;
 import zorg.platform.Platform;
 import zorg.platform.RtpStack;
 import zorg.platform.ZrtpListener;
-import zorg.platform.j2se.StandardPlatformFactory;
 
 /*
  * Test harness for the ZRTP implementation
@@ -40,8 +39,7 @@ public class TestHarness {
 	TestHarness(String label) {
 		this.label = label;
 		//Platform platform = AndroidPlatform.getInstance();
-		zorg.platform.j2se.PlatformImpl.init(new StandardPlatformFactory());
-		Platform platform = zorg.platform.j2se.PlatformImpl.getInstance();
+		Platform platform = new zorg.platform.j2se.PlatformImpl();
 		zrtp = new ZRTP(platform);
 		zrtp.setPhoneNumber(label);   // FIXME - make this configurable?
 		zrtp.setProtocolManager(new ZRTPListener());

@@ -1,195 +1,143 @@
-/**
- * ZRTP.org is a ZRTP protocol implementation  
- * Copyright (C) 2012 - PrivateWave Italia S.p.A.
- * 
- * This  program  is free software:  you can  redistribute it and/or
- * modify  it  under  the terms  of  the  GNU Affero  General Public
- * License  as  published  by the  Free Software Foundation,  either 
- * version 3 of the License,  or (at your option) any later version.
- * 
- * This program is  distributed in  the hope that it will be useful,
- * but WITHOUT ANY WARRANTY;  without even  the implied  warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU 
- * Affero General Public License for more details.
- * 
- * You should have received a copy of the  GNU Affero General Public
- * License along with this program.
- * If not, see <http://www.gnu.org/licenses/>.
- * 
- * For more information, please contact PrivateWave Italia S.p.A. at
- * address zorg@privatewave.com or http://www.privatewave.com 
- */
 package zorg.platform.j2se;
 
+import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
-import java.security.GeneralSecurityException;
-import java.security.MessageDigest;
+import java.security.NoSuchAlgorithmException;
+import java.security.SecureRandom;
 
 import javax.crypto.Cipher;
-import javax.crypto.CipherOutputStream;
+import javax.crypto.Mac;
+import javax.crypto.NoSuchPaddingException;
 import javax.crypto.spec.IvParameterSpec;
 import javax.crypto.spec.SecretKeySpec;
 
 import zorg.CryptoException;
-import zorg.platform.CryptoUtils;
 import zorg.platform.DiffieHellmanSuite;
 import zorg.platform.Digest;
 import zorg.platform.EncryptorSuite;
 import zorg.platform.HMAC;
 import zorg.platform.RandomGenerator;
 
-public class CryptoUtilsImpl implements CryptoUtils {
+import com.sun.crypto.provider.AESParameters;
 
-	// ZBC is the Zorg modified BouncyCastle
-	//public static final String PROVIDER_NAME = "ZBC";
-	public static final String PROVIDER_NAME = "BC";
-	private RandomGenerator randomGenerator;
 
-	/* (non-Javadoc)
-	 * @see zorg.platform.CryptoUtils#aesDecrypt(byte[], int, int, byte[], byte[])
-	 */
-	@Override
-	public byte[] aesDecrypt(byte[] data, int offset, int length, byte[] key,
-			byte[] initVector) throws CryptoException {
+public class CryptoUtilsImpl implements zorg.platform.CryptoUtils {
+	
+	public static final String DEFAULT_RANDOM_ALGORITHM = "SHA1PRNG";
+	
+	public CryptoUtilsImpl() {
+		
+	}
+
+	private Digest makeDigestImpl(DigestType digestType) {
 		try {
-			SecretKeySpec scs = new SecretKeySpec(key, "AES");
-			Cipher cipher = Cipher.getInstance("AES/CFB/NoPadding", PROVIDER_NAME);
-			IvParameterSpec iv = new IvParameterSpec(initVector);
-			ByteArrayOutputStream baos = new ByteArrayOutputStream(length);
-			cipher.init(Cipher.DECRYPT_MODE, scs, iv);
-			CipherOutputStream out = new CipherOutputStream(baos, cipher);
-			out.write(data, offset, length);
-			out.close();
-			baos.close();
-			return baos.toByteArray();
+			return new DigestImpl(digestType);
+		} catch (NoSuchAlgorithmException e) {
+			e.printStackTrace();
+			throw new RuntimeException("Failed to create digest: " + digestType + ": " + e.getClass().getName() + ": " + e.getMessage());
+		}
+	}
+	
+	@Override
+	public Digest createDigestSHA1() {
+		return makeDigestImpl(DigestType.SHA1);
+	}
+	
+	@Override
+	public Digest createDigestSHA256() {
+		return makeDigestImpl(DigestType.SHA256);
+	}
+
+	@Override
+	public Digest createDigestSHA384() {
+		return makeDigestImpl(DigestType.SHA384);
+	}
+
+	@Override
+	public byte[] calculateSHA256HMAC(byte[] data, int offset, int length,
+			byte[] aKey) {
+		return calculateHMAC(DigestType.SHA256, data, offset, length, aKey);
+	}
+
+	@Override
+	public byte[] calculateSHA384HMAC(byte[] data, int offset, int length,
+			byte[] aKey) {
+		return calculateHMAC(DigestType.SHA384, data, offset, length, aKey);
+	}
+
+	private byte[] calculateHMAC(DigestType digestType, byte[] data, int offset,
+			int length, byte[] aKey) {
+		try {
+			Mac mac = Mac.getInstance(digestType.getJCEHmacName());
+			SecretKeySpec key = new SecretKeySpec(aKey, mac.getAlgorithm());
+			mac.init(key);
+			mac.update(data, offset, length);
+			return mac.doFinal();
 		} catch (Exception e) {
-			throw new CryptoException(e);
+			e.printStackTrace();
+			throw new RuntimeException("Failed to calc hmac " + digestType + e.getClass().getName() + ": " + e.getMessage());
 		}
 	}
 
-	/* (non-Javadoc)
-	 * @see zorg.platform.CryptoUtils#aesEncrypt(byte[], byte[], byte[])
-	 */
+	@Override
+	public HMAC createHMACSHA1(byte[] hmacKey) throws CryptoException {
+		return new HMACSHA1Impl(hmacKey);
+	}
+
+	@Override
+	public RandomGenerator getRandomGenerator() {
+		return new RandomGeneratorImpl();
+	}
+	
+	final static String CIPHER_ALGORITHM_CFB = "AES/CFB64/NoPadding";
+
 	@Override
 	public byte[] aesEncrypt(byte[] data, byte[] key, byte[] initVector)
 			throws CryptoException {
 		try {
-			SecretKeySpec scs = new SecretKeySpec(key, "AES");
-			Cipher cipher = Cipher.getInstance("AES/CFB/NoPadding", PROVIDER_NAME);
-			IvParameterSpec iv = new IvParameterSpec(initVector);
-			cipher.init(Cipher.ENCRYPT_MODE, scs, iv);
-			ByteArrayOutputStream baos = new ByteArrayOutputStream(data.length);
-			CipherOutputStream out = new CipherOutputStream(baos, cipher);
-			out.write(data, 0, data.length);
-			out.close();
-			baos.close();
-			return baos.toByteArray();
+			SecretKeySpec keySpec = new SecretKeySpec(key, "AES");
+			Cipher cipher = Cipher.getInstance(CIPHER_ALGORITHM_CFB);
+			//SecureRandom secureRandom = SecureRandom.getInstance(CryptoUtilsImpl.DEFAULT_RANDOM_ALGORITHM);
+			//secureRandom.setSeed(initVector);
+			IvParameterSpec ivSpec = new IvParameterSpec(initVector);
+			cipher.init(Cipher.ENCRYPT_MODE, keySpec, ivSpec);
+			return cipher.doFinal(data);
 		} catch (Exception e) {
 			throw new CryptoException(e);
 		}
 	}
 
-	/* (non-Javadoc)
-	 * @see zorg.platform.CryptoUtils#calculateSHA256HMAC(byte[], int, int, byte[])
-	 */
 	@Override
-	public byte[] calculateSHA256HMAC(byte[] data, int offset, int length,
-			byte[] aKey) {
-		return BCHmacAdapter.hmac(data, offset, length, aKey, "HmacSHA256");
+	public byte[] aesDecrypt(byte[] data, int offset, int length, byte[] key,
+			byte[] initVector) throws CryptoException {
+		try {
+			SecretKeySpec keySpec = new SecretKeySpec(key, "AES");
+			Cipher cipher = Cipher.getInstance(CIPHER_ALGORITHM_CFB);
+			//SecureRandom secureRandom = SecureRandom.getInstance(CryptoUtilsImpl.DEFAULT_RANDOM_ALGORITHM);
+			//secureRandom.setSeed(initVector);
+			IvParameterSpec ivSpec = new IvParameterSpec(initVector);
+			cipher.init(Cipher.DECRYPT_MODE, keySpec, ivSpec);
+			return cipher.doFinal(data, offset, length);
+		} catch (Exception e) {
+			throw new CryptoException(e);
+		}
 	}
 
-	/* (non-Javadoc)
-	 * @see zorg.platform.CryptoUtils#calculateSHA384HMAC(byte[], int, int, byte[])
-	 */
-	@Override
-	public byte[] calculateSHA384HMAC(byte[] data, int offset, int length,
-			byte[] aKey) {
-		return BCHmacAdapter.hmac(data, offset, length, aKey, "HmacSHA384");
-	}
-
-	/* (non-Javadoc)
-	 * @see zorg.platform.CryptoUtils#createDHSuite()
-	 */
 	@Override
 	public DiffieHellmanSuite createDHSuite() {
-		return new BCDHSuite();
+		return new DiffieHellmanSuiteImpl();
 	}
 
-	/* (non-Javadoc)
-	 * @see zorg.platform.CryptoUtils#createDigestSHA1()
-	 */
-	@Override
-	public Digest createDigestSHA1() {
-		try {
-			return new BCDigest(MessageDigest.getInstance("SHA1", PROVIDER_NAME));
-		} catch (GeneralSecurityException e) {
-			PlatformImpl.getInstance().getLogger().logException(e.getMessage());
-			return null;
-		}
-	}
-
-	/* (non-Javadoc)
-	 * @see zorg.platform.CryptoUtils#createDigestSHA256()
-	 */
-	@Override
-	public Digest createDigestSHA256() {
-		try {
-			return new BCDigest(MessageDigest.getInstance("SHA256", PROVIDER_NAME));
-		} catch (GeneralSecurityException e) {
-			PlatformImpl.getInstance().getLogger().logException(e.getMessage());
-			return null;
-		}
-	}
-
-	/* (non-Javadoc)
-	 * @see zorg.platform.CryptoUtils#createDigestSHA384()
-	 */
-	@Override
-	public Digest createDigestSHA384() {
-		try {
-			return new BCDigest(MessageDigest.getInstance("SHA384", PROVIDER_NAME));
-		} catch (GeneralSecurityException e) {
-			PlatformImpl.getInstance().getLogger().logException(e.getMessage());
-			return null;
-		}
-	}
-
-	/* (non-Javadoc)
-	 * @see zorg.platform.CryptoUtils#createEncryptorSuite(byte[], byte[])
-	 */
 	@Override
 	public EncryptorSuite createEncryptorSuite(byte[] key, byte[] initVector)
 			throws CryptoException {
-		return new BCEncryptorSuite(key, initVector);
+		return new EncryptorSuiteImpl(key, initVector);
 	}
 
-	/* (non-Javadoc)
-	 * @see zorg.platform.CryptoUtils#createHMACSHA1(byte[])
-	 */
-	@Override
-	public HMAC createHMACSHA1(byte[] hmacKey) throws CryptoException {
-		try {
-			return new BCHmacAdapter(hmacKey, "SHA1");
-		} catch (Exception e) {
-			PlatformImpl.getInstance().getLogger().logException(e.getMessage());
-			return null;
-		}
-	}
-
-	/* (non-Javadoc)
-	 * @see zorg.platform.CryptoUtils#getRandomGenerator()
-	 */
-	@Override
-	public RandomGenerator getRandomGenerator() {
-		return randomGenerator;
-	}
-
-	/* (non-Javadoc)
-	 * @see zorg.platform.CryptoUtils#setRandomGenerator(zorg.platform.RandomGenerator)
-	 */
 	@Override
 	public void setRandomGenerator(RandomGenerator r) {
-		randomGenerator = r;
+		// TODO Auto-generated method stub
+		
 	}
 
 }

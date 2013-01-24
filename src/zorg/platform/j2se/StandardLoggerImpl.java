@@ -46,8 +46,7 @@ public class StandardLoggerImpl implements ZrtpLogger {
 
 	@Override
 	public void log(String message, byte[] buffer, int offset, int length) {
-		// TODO Auto-generated method stub
-		
+		logger.log(Level.INFO, label + message + ": " + new UtilsImpl().byteToHexString(buffer, offset, length));
 	}
 
 }
