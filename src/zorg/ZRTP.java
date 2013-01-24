@@ -295,6 +295,13 @@ public class ZRTP {
 
 	// our cache expiry value; we're always sending the recommened value 0xffffffff
 	private static final byte[] mOurCacheExpiry = { (byte) 0xff, (byte) 0xff, (byte) 0xff, (byte) 0xff };
+
+	// WARNING: don't change this: the code is not very flexible about the length of strings within the headers
+    // until that is fixed, we can only allow exactly one cipherType and exactly two authentication modes
+    // (currently, the mandatory modes from RFC 6189) or exactly two cipherTypes and one authentication mode.
+    private static final String DEFAULT_CIPHERS = "AES1";   // 128 bit key
+    //private static final String DEFAULT_CIPHERS = "AES1AES3";   // 128 and 256 bit keys
+
 	private static int counter = 0;
 	private final Platform platform;
 
@@ -793,8 +800,13 @@ public class ZRTP {
 			hashes += "S256";
 			++hc;
 		}
-		String ciphers = new String("AES1AES3"); // AES-128 & 256
+		String ciphers = DEFAULT_CIPHERS; // AES-128 & 256
 		String authTags = authMode.name(); // HMAC-SHA1 32
+		if(ciphers.length() == 4) {
+			// FIXME - hack for compatibility with older clients expecting
+			// cipher types and auth schemes to be in fixed positions.
+			authTags = authMode.name() + "HS80";
+		}
 		String keyTypes = "";
 		byte kc = 0;
 		if (TestSettings.KEY_TYPE_EC38) {
