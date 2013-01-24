@@ -21,7 +21,6 @@
  */
 package zorg.platform.j2se;
 
-import android.app.Application;
 import zorg.TestSettings;
 import zorg.platform.AddressBook;
 import zorg.platform.CryptoUtils;
@@ -41,24 +40,20 @@ public class PlatformImpl implements Platform {
 	private AddressBook addressbook;
 	private final RandomGenerator rg;
 	private static Platform instance;
-
-	private Application applicationInstance; 
 	
 	private boolean isDebugBuild;
 	
-	private PlatformImpl (PlatformFactory androidFactory,  Application applicationInstance) {
-		this.applicationInstance = applicationInstance;
-		
-		logger = androidFactory.getLogger();
+	private PlatformImpl (PlatformFactory platformFactory) {
+		logger = platformFactory.getLogger();
 		addressbook = new AddressBookAdaptorImpl();
 		utils = new UtilsImpl();
-		storage = new ZrtpCacheDB(applicationInstance, androidFactory.getLogger());
+		storage = new ZrtpCacheDB(platformFactory.getLogger());
 		cryptoUtils = new CryptoUtilsImpl();
 		
 		rg 		= RandomGeneratorImpl.getInstance();
 		cryptoUtils.setRandomGenerator(rg);
 
-		isDebugBuild = androidFactory.getDebugFlag();		
+		isDebugBuild = platformFactory.getDebugFlag();		
 	}
 	
 	/**
@@ -67,8 +62,8 @@ public class PlatformImpl implements Platform {
 	 * @param androidFactory an Android Platform implementation
 	 * @param applicationInstance the android.app.Application instance
 	 */
-	public static void init(PlatformFactory androidFactory, Application applicationInstance) {
-		instance = new PlatformImpl(androidFactory, applicationInstance);
+	public static void init(PlatformFactory androidFactory) {
+		instance = new PlatformImpl(androidFactory);
 	}
 	
 	public static Platform getInstance() {
@@ -112,12 +107,5 @@ public class PlatformImpl implements Platform {
 	@Override
 	public RandomGenerator getRandomGenerator() {
 		return rg;
-	}
-	
-	/**
-	 * @return The android.app.Application instance
-	 */
-	public Application getApplication() {
-		return applicationInstance;
 	}
 }
