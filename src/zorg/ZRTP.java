@@ -167,7 +167,7 @@ public class ZRTP {
 
 	private ZrtpListener listener = null;
 	private RtpStack rtpStack = null;
-	private int state = ZRTP_STATE_INACTIVE;
+	private volatile int state = ZRTP_STATE_INACTIVE;
 	private boolean started = false;
 	private int seqNum;
 	private boolean completed; // Set to true when zrtp session is completed
