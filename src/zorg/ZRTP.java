@@ -1343,6 +1343,7 @@ public class ZRTP {
 		getDHResult(msgDhPart1RX);
 		if (dhResult == null) {
 			msgDhPart1RX = null;
+			logWarning("failed to get DH result for msgDhPart1RX");
 			return;
 		}
 		sendDHPart2();
