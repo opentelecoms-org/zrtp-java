@@ -38,7 +38,7 @@ public class BCEncryptorSuite implements EncryptorSuite {
 			throws CryptoException {
 		try {
 			scs = new SecretKeySpec(key, "AES");
-			cipher = Cipher.getInstance("AES/CBC/NoPadding", "ZBC");
+			cipher = Cipher.getInstance("AES/CBC/NoPadding", CryptoUtilsImpl.PROVIDER_NAME);
 			iv = new IvParameterSpec(initVector);
 			cipher.init(Cipher.ENCRYPT_MODE, scs, iv);
 		} catch (Exception e) {
@@ -60,7 +60,7 @@ public class BCEncryptorSuite implements EncryptorSuite {
 	@Override
 	public byte[] encryptIV_for_prf(byte[] IV) throws CryptoException {
 		try {
-			Cipher cipher = Cipher.getInstance("AES/CBC/NoPadding", "ZBC");
+			Cipher cipher = Cipher.getInstance("AES/CBC/NoPadding", CryptoUtilsImpl.PROVIDER_NAME);
 			cipher.init(Cipher.ENCRYPT_MODE, scs, iv);
 			return cipher.doFinal(IV, 0, 16);
 		} catch (Exception e) {

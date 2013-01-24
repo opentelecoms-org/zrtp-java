@@ -31,11 +31,11 @@ import zorg.platform.HMAC;
 public class BCHmacAdapter implements HMAC {
 	
 	private Mac hmac;
-
+	
 	public BCHmacAdapter(byte[] hmacKey, String hashAlgorithm) {
 		SecretKey key = new SecretKeySpec(hmacKey, "Hmac" + hashAlgorithm);
 		try {
-			hmac = Mac.getInstance("Hmac" + hashAlgorithm, "ZBC");
+			hmac = Mac.getInstance("Hmac" + hashAlgorithm, CryptoUtilsImpl.PROVIDER_NAME);
 			hmac.init(key);
 		} catch (Exception e) {
 			PlatformImpl.getInstance().getLogger().logException(e.getMessage());
@@ -47,7 +47,7 @@ public class BCHmacAdapter implements HMAC {
 			String digestAlgorithm) {
 		SecretKey key = new SecretKeySpec(aKey, digestAlgorithm);
 		try {
-			Mac hmac = Mac.getInstance(digestAlgorithm, "ZBC");
+			Mac hmac = Mac.getInstance(digestAlgorithm, CryptoUtilsImpl.PROVIDER_NAME);
 			hmac.init(key);
 			hmac.update(data, offset, length);
 			byte[] res = new byte[hmac.getMacLength()];

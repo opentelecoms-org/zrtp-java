@@ -40,6 +40,9 @@ import zorg.platform.RandomGenerator;
 
 public class CryptoUtilsImpl implements CryptoUtils {
 
+	// ZBC is the Zorg modified BouncyCastle
+	//public static final String PROVIDER_NAME = "ZBC";
+	public static final String PROVIDER_NAME = "BC";
 	private RandomGenerator randomGenerator;
 
 	/* (non-Javadoc)
@@ -50,7 +53,7 @@ public class CryptoUtilsImpl implements CryptoUtils {
 			byte[] initVector) throws CryptoException {
 		try {
 			SecretKeySpec scs = new SecretKeySpec(key, "AES");
-			Cipher cipher = Cipher.getInstance("AES/CFB/NoPadding", "ZBC");
+			Cipher cipher = Cipher.getInstance("AES/CFB/NoPadding", PROVIDER_NAME);
 			IvParameterSpec iv = new IvParameterSpec(initVector);
 			ByteArrayOutputStream baos = new ByteArrayOutputStream(length);
 			cipher.init(Cipher.DECRYPT_MODE, scs, iv);
@@ -72,7 +75,7 @@ public class CryptoUtilsImpl implements CryptoUtils {
 			throws CryptoException {
 		try {
 			SecretKeySpec scs = new SecretKeySpec(key, "AES");
-			Cipher cipher = Cipher.getInstance("AES/CFB/NoPadding", "ZBC");
+			Cipher cipher = Cipher.getInstance("AES/CFB/NoPadding", PROVIDER_NAME);
 			IvParameterSpec iv = new IvParameterSpec(initVector);
 			cipher.init(Cipher.ENCRYPT_MODE, scs, iv);
 			ByteArrayOutputStream baos = new ByteArrayOutputStream(data.length);
@@ -118,7 +121,7 @@ public class CryptoUtilsImpl implements CryptoUtils {
 	@Override
 	public Digest createDigestSHA1() {
 		try {
-			return new BCDigest(MessageDigest.getInstance("SHA1", "ZBC"));
+			return new BCDigest(MessageDigest.getInstance("SHA1", PROVIDER_NAME));
 		} catch (GeneralSecurityException e) {
 			PlatformImpl.getInstance().getLogger().logException(e.getMessage());
 			return null;
@@ -131,7 +134,7 @@ public class CryptoUtilsImpl implements CryptoUtils {
 	@Override
 	public Digest createDigestSHA256() {
 		try {
-			return new BCDigest(MessageDigest.getInstance("SHA256", "ZBC"));
+			return new BCDigest(MessageDigest.getInstance("SHA256", PROVIDER_NAME));
 		} catch (GeneralSecurityException e) {
 			PlatformImpl.getInstance().getLogger().logException(e.getMessage());
 			return null;
@@ -144,7 +147,7 @@ public class CryptoUtilsImpl implements CryptoUtils {
 	@Override
 	public Digest createDigestSHA384() {
 		try {
-			return new BCDigest(MessageDigest.getInstance("SHA384", "ZBC"));
+			return new BCDigest(MessageDigest.getInstance("SHA384", PROVIDER_NAME));
 		} catch (GeneralSecurityException e) {
 			PlatformImpl.getInstance().getLogger().logException(e.getMessage());
 			return null;

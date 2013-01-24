@@ -35,11 +35,11 @@ import javax.crypto.KeyAgreement;
 
 import zorg.KeyAgreementType;
 import zorg.ZrtpException;
-import zorg.bouncycastle.asn1.ASN1InputStream;
-import zorg.bouncycastle.asn1.DERBitString;
-import zorg.bouncycastle.asn1.DERObject;
-import zorg.bouncycastle.asn1.DERSequence;
-import zorg.bouncycastle.jce.ECNamedCurveTable;
+import org.bouncycastle.asn1.ASN1InputStream;
+import org.bouncycastle.asn1.DERBitString;
+import org.bouncycastle.asn1.DERObject;
+import org.bouncycastle.asn1.DERSequence;
+import org.bouncycastle.jce.ECNamedCurveTable;
 import zorg.platform.DiffieHellmanSuite;
 import zorg.platform.ZrtpLogger;
 
@@ -65,7 +65,7 @@ public class BCDHSuite implements DiffieHellmanSuite {
 			System.arraycopy(aMsg, offset, encodedKey, 1, encodedKey.length - 1);
 			EncodedKeySpec keySpec = getSpec(encodedKey, keyPair.getPublic());
 			PublicKey pub = keyFactory.generatePublic(keySpec);
-			KeyAgreement agreement = KeyAgreement.getInstance(algorithm, "ZBC");
+			KeyAgreement agreement = KeyAgreement.getInstance(algorithm, CryptoUtilsImpl.PROVIDER_NAME);
 			agreement.init(keyPair.getPrivate());
 			agreement.doPhase(pub, true);
 			byte[] secret = agreement.generateSecret();
@@ -120,20 +120,20 @@ public class BCDHSuite implements DiffieHellmanSuite {
 			switch (keyType.keyType) {
 			case KeyAgreementType.DH_MODE_DH3K:
 				algorithm = "DH";
-				kpg = KeyPairGenerator.getInstance(algorithm, "ZBC");
+				kpg = KeyPairGenerator.getInstance(algorithm, CryptoUtilsImpl.PROVIDER_NAME);
 				kpg.initialize(576);
 				keyPair = kpg.genKeyPair();
 				break;
 			case KeyAgreementType.DH_MODE_EC25:
 				algorithm = "ECDH";
-				kpg = KeyPairGenerator.getInstance(algorithm, "ZBC");
+				kpg = KeyPairGenerator.getInstance(algorithm, CryptoUtilsImpl.PROVIDER_NAME);
 				// kpg.initialize(256);
 				kpg.initialize(ECNamedCurveTable.getParameterSpec("P-256"));
 				keyPair = kpg.genKeyPair();
 				break;
 			case KeyAgreementType.DH_MODE_EC38:
 				algorithm = "ECDH";
-				kpg = KeyPairGenerator.getInstance(algorithm, "ZBC");
+				kpg = KeyPairGenerator.getInstance(algorithm, CryptoUtilsImpl.PROVIDER_NAME);
 				// kpg.initialize(384);
 				kpg.initialize(ECNamedCurveTable.getParameterSpec("P-384"));
 				keyPair = kpg.genKeyPair();
@@ -141,7 +141,7 @@ public class BCDHSuite implements DiffieHellmanSuite {
 			default:
 				break;
 			}
-			keyFactory = KeyFactory.getInstance(algorithm, "ZBC");
+			keyFactory = KeyFactory.getInstance(algorithm, CryptoUtilsImpl.PROVIDER_NAME);
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
