@@ -19,7 +19,7 @@
  * For more information, please contact PrivateWave Italia S.p.A. at
  * address zorg@privatewave.com or http://www.privatewave.com 
  */
-package zorg.platform.android;
+package zorg.platform.j2se;
 
 import java.security.DigestException;
 import java.security.MessageDigest;
