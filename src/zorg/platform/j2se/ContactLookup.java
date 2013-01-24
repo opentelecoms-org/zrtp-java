@@ -21,10 +21,6 @@
  */
 package zorg.platform.j2se;
 
-import android.database.Cursor;
-import android.net.Uri;
-import android.provider.ContactsContract.PhoneLookup;
-
 public class ContactLookup {
 
 	String name;
@@ -39,30 +35,6 @@ public class ContactLookup {
 	public ContactLookup(String number) {
 		this.name = number;
 		this.number = number;
-
-		if (!number.equals("")) {
-			if (number.startsWith("+"))
-				number = number.substring(1);
-			Cursor c = ((PlatformImpl) PlatformImpl.getInstance()).getApplication()
-					.getApplicationContext()
-					.getContentResolver()
-					.query(Uri.withAppendedPath(PhoneLookup.CONTENT_FILTER_URI,
-							Uri.encode(number)),
-							new String[] { PhoneLookup.DISPLAY_NAME }, null, null,
-							null);
-			
-			if (c.getCount() > 0) {
-				isOnUserAddressBook = true;
-			}
-	
-	
-			while (c.moveToNext())
-				this.name = c.getString(c.getColumnIndexOrThrow(PhoneLookup.DISPLAY_NAME));
-			
-			c.close();
-		}
-		
-		
 	}
 
 	/**
