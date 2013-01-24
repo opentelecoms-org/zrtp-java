@@ -2683,6 +2683,20 @@ public class ZRTP {
 		}
 	}
 	
+    /**
+     * The main purpose of this function is to let the application know if
+     * it is safe to send RTP packets unencrypted.  The ZRTP spec mandates
+     * that:
+     * - the initiator should stop sending RTP after sending Commit
+     * - the responder should stop sending RTP after receiving Commit
+     * @return true if Commit has been sent or received
+     */
+	public boolean isProgressing() {
+		if(state < ZRTP_STATE_GOT_COMMIT)
+			return false;
+		return true;
+	}
+	
 	public AuthenticationMode getAuthenticationMode() {
 		return authMode;
 	}
