@@ -21,82 +21,34 @@
  */
 package zorg.platform.j2se;
 
+import java.util.ArrayList;
 import java.util.Enumeration;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Set;
 import java.util.Vector;
 
 import zorg.ZrtpCacheEntry;
 import zorg.platform.PersistentHashtable;
 import zorg.platform.ZrtpLogger;
-import android.app.Application;
-import android.content.ContentValues;
-import android.content.Context;
-import android.database.Cursor;
-import android.database.sqlite.SQLiteDatabase;
-import android.database.sqlite.SQLiteOpenHelper;
-import android.database.sqlite.SQLiteStatement;
 
 public class ZrtpCacheDB implements PersistentHashtable {
 	
-	private static final String DATABASE_NAME = "zrtp_cache.db";
-	private static final int 	DATABASE_VERSION = 1;
-
-	private static final String TABLE_NAME = "zrtp_cache";
-	private static final String COLUMN_ZID = "zid";
-	private static final String COLUMN_DATA = "data";
-	private static final String COLUMN_NUMBER = "number";
-
-	public static final String DATABASE_CREATE = "create table " + TABLE_NAME
-			+ " (_id integer primary key autoincrement," + COLUMN_ZID
-			+ " text not null," + COLUMN_DATA + " blob not null,"
-			+ COLUMN_NUMBER + " text not null);";
-	
-	private SQLiteStatement insertStmt;
-	
-	private static final String INSERT = "insert into " + TABLE_NAME + "("
-			+ COLUMN_ZID + "," + COLUMN_DATA + "," + COLUMN_NUMBER
-			+ ") values (?,?,?);";
-
-	private SQLiteDatabase database;
-	
 	private ZrtpLogger logger;
+	Map<String,ZrtpCacheEntry> store = new HashMap<String,ZrtpCacheEntry>(); 
 	
-	public ZrtpCacheDB(Application acc, ZrtpLogger l) {
+	public ZrtpCacheDB(ZrtpLogger l) {
 		logger = l;
-		
-		OpenHelper openHelper = new OpenHelper(
-				acc.getApplicationContext(), logger);
-		this.database = openHelper.getWritableDatabase();
-		this.insertStmt = this.database.compileStatement(INSERT);
 	}
 
 	@Override
 	public ZrtpCacheEntry get(String zid) {
 		ZrtpCacheEntry entry = null;
-		
-		String zidDbFormat = convertToDBFormat(zid);
 
-		String[] zidColumn = new String[] { COLUMN_ZID,
-				COLUMN_DATA,
-				COLUMN_NUMBER};
-
-		Cursor cursor = this.database.query(TABLE_NAME, zidColumn, COLUMN_ZID + "='" + zidDbFormat + "'", null,
-				null, null, null);
-		
-		logger.log("[Zrtp Cache] Found " + cursor.getCount() + " entry in zrtp_cache_db for zid " + zidDbFormat);
-
-		if (cursor.moveToFirst()) {
-			do {
-				entry = new CacheEntryImpl(convertFromDBFormat(cursor.getString(0)),
-						cursor.getBlob(1),
-						cursor.getString(2));
-			} while (cursor.moveToNext());
-		}
-		if (cursor != null && !cursor.isClosed()) {
-			cursor.close();
-		}
+		entry = store.get(zid);
 		
 		if (entry != null) {
-			logger.log("[Zrtp Cache] Entry for "  + zidDbFormat + " and number " + entry.getNumber() + " found!");
+			logger.log("[Zrtp Cache] Entry for "  + zid + " and number " + entry.getNumber() + " found!");
 		} else
 			logger.log("[Zrtp Cache] No entry found!");
 		
@@ -105,105 +57,44 @@ public class ZrtpCacheDB implements PersistentHashtable {
 
 	@Override
 	public Enumeration<String> keys() {
-		Vector<String> list = new Vector<String>();
-
-		String[] zidColumn = new String[] { COLUMN_ZID};
-
-		Cursor cursor = this.database.query(TABLE_NAME, zidColumn, null, null,
-				null, null, null);
-
-		if (cursor.moveToFirst()) {
-			do {
-				list.add(convertFromDBFormat(cursor.getString(0)));
-			} while (cursor.moveToNext());
-		}
-		if (cursor != null && !cursor.isClosed()) {
-			cursor.close();
-		}
-		
-		logger.log("[Zrtp Cache] Found " + list.size() + " keys in zrtp_cache_db");
-		return list.elements();
+		Set<String> keys = store.keySet();		
+		logger.log("[Zrtp Cache] Found " + keys.size() + " keys in zrtp_cache_db");
+		return new Vector<String>(keys).elements();
 	}
 
 	@Override
 	public void put(String zid, byte[] data, String phoneNumber) {
 		/* first, search for a data to update */
 		ZrtpCacheEntry oldEntry = get(zid);
-		String zidDbFormat = convertToDBFormat(zid);
 		
 		if (oldEntry != null) {
 			logger.log("[Zrtp Cache] An old data found...update it!");
 			/* UPDATE DATA */
 
-			ContentValues newData = new ContentValues();
-			newData.put(COLUMN_ZID, zidDbFormat);
-			newData.put(COLUMN_DATA, data);
-			newData.put(COLUMN_NUMBER, phoneNumber == null ? oldEntry.getNumber() : phoneNumber);
-
-			database.update(TABLE_NAME, newData, COLUMN_ZID +"='"+zidDbFormat + "'", null);
+			oldEntry.setData(data);
+			oldEntry.setNumber(phoneNumber);
 		} else {
 			logger.log("[Zrtp Cache] Insert new data!");
 			/* INSERT DATA */
-			this.insertStmt.bindString(1, zidDbFormat);
-			this.insertStmt.bindBlob(2,data);
-			this.insertStmt.bindString(3, phoneNumber == null ? "" : phoneNumber);
+			ZrtpCacheEntry entry = new CacheEntryImpl();
+			entry.setData(data);
+			entry.setNumber(phoneNumber);
 
-			this.insertStmt.executeInsert();
+			store.put(zid, entry);
 		}
 		
 	}
 
 	@Override
 	public void remove(String zid) {
-		String zidDbFormat = convertToDBFormat(zid);
-		this.database.delete(TABLE_NAME, COLUMN_ZID + "='" + zidDbFormat + "'", null);
-		logger.log("[Zrtp Cache] deleted element for zid " + zidDbFormat);
+		store.remove(zid);
+		logger.log("[Zrtp Cache] deleted element for zid " + zid);
 	}
 
 	@Override
 	public void reset() {
-		this.database.delete(TABLE_NAME, null, null);
+		store.clear();
 		logger.log("[Zrtp Cache] Reset zrtp_cache_db");
 	}
 	
-	private String convertFromDBFormat(String original) {
-		byte[] buffer = new byte[original.length() / 2];
-		for (int i = 0; i < buffer.length; i++) {
-			buffer[i] = (byte) Short.parseShort(
-					original.substring(i * 2, i * 2 + 2), 16);
-		}
-
-		return new String(buffer);
-
-	}
-	
-	private String convertToDBFormat(String original) {
-		return PlatformImpl.getInstance().getUtils().byteToHexString(original.getBytes());
-	}
-
-	private static class OpenHelper extends SQLiteOpenHelper {
-		ZrtpLogger logger;
-		
-		
-		OpenHelper(Context context, ZrtpLogger logger) {
-			super(context, DATABASE_NAME, null, DATABASE_VERSION);
-			this.logger = logger;
-		}
-
-		@Override
-		public void onCreate(SQLiteDatabase db) {
-			try {
-				db.execSQL(DATABASE_CREATE);
-			} catch (Exception e) {
-				logger.logException(e.getMessage());
-			}
-		}
-
-		@Override
-		public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
-			db.execSQL("DROP TABLE IF EXISTS " + TABLE_NAME);
-			onCreate(db);
-		}
-	}
-
 }
