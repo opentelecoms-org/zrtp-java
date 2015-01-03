@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<project name="opentelecoms.org-zrtp" basedir="." default="jar">
+
+    <property name="dest" value="classes"/>
+    <property name="lib" value="lib"/>
+    <property name="src" value="src"/>
+    <property name="opentelecoms.org-zrtp.jar" value="opentelecoms.org-zrtp.jar"/>
+
+    <path id="project.class.path">
+        <pathelement location="${dest}"/>
+        <pathelement location="${lib}/bcprov-jdk16-146.jar"/>
+    </path>
+
+    <target name="init">
+        <mkdir dir="${dest}"/>
+    </target>
+
+    <target name="compile" depends="init">
+        <javac classpathref="project.class.path"
+               debug="true"
+               deprecation="true"
+               destdir="${dest}"
+               nowarn="false"
+               target="1.5"
+               source="1.5">
+            <src path="${src}"/>
+        </javac>
+    </target>
+
+    <target name="jar" depends="compile">
+        <jar compress="true" destfile="${opentelecoms.org-zrtp.jar}">
+            <fileset dir="${dest}"/>
+        </jar>
+    </target>
+
+</project>
