@@ -8,7 +8,7 @@ import zorg.ZrtpCacheEntry;
 import zorg.platform.PersistentHashtable;
 
 
-public class PersistentHashtableImpl extends HashMap<String, ZrtpCacheEntry> implements
+public class PersistentHashtableImpl extends HashMap implements
 		PersistentHashtable {
 
 	/**
@@ -20,27 +20,22 @@ public class PersistentHashtableImpl extends HashMap<String, ZrtpCacheEntry> imp
 		
 	}
 	
-	@Override
 	public void remove(String zid) {
 		super.remove(zid);
 	}
 
-	@Override
 	public void put(String zid, byte[] data, String phoneNumber) {
 		super.put(zid, new ZrtpCacheEntryImpl(data, phoneNumber));
 	}
 
-	@Override
-	public Enumeration<String> keys() {
+	public Enumeration keys() {
 		return Collections.enumeration(keySet());
 	}
 
-	@Override
 	public ZrtpCacheEntry get(String zid) {
-		return super.get(zid);
+		return (ZrtpCacheEntry)super.get(zid);
 	}
 
-	@Override
 	public void reset() {
 		super.clear();
 	}

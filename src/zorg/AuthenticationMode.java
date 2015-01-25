@@ -30,7 +30,6 @@ public class AuthenticationMode {
 		return new String(getSymbol());
 	}
 	
-	@Override
 	public String toString() {
 		return name();
 	}

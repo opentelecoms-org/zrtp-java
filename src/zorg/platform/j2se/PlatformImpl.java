@@ -25,38 +25,31 @@ public class PlatformImpl implements zorg.platform.Platform {
 		logger = new StandardLoggerImpl(label);
 	}
 
-	@Override
 	public ZrtpLogger getLogger() {
 		return logger;
 	}
 
-	@Override
 	public AddressBook getAddressBook() {
 		return addresses;
 	}
 
-	@Override
 	public CryptoUtils getCrypto() {
 		return cryptoUtils;
 	}
 
-	@Override
 	public Utils getUtils() {
 		return utils;
 	}
 
-	@Override
 	public PersistentHashtable getHashtable() {
 		return ht;
 	}
 
-	@Override
 	public boolean isVerboseLogging() {
 		// TODO Auto-generated method stub
 		return false;
 	}
 
-	@Override
 	public RandomGenerator getRandomGenerator() {
 		// TODO Auto-generated method stub
 		return null;

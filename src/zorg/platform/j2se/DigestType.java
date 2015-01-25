@@ -1,10 +1,10 @@
 package zorg.platform.j2se;
 
-public enum DigestType {
+public class DigestType {
 
-	SHA1 ("SHA-1", "HmacSHA1"),
-	SHA256 ("SHA-256", "HmacSHA256"),
-	SHA384 ("SHA-384", "HmacSHA384");
+	public final static DigestType SHA1 = new DigestType("SHA-1", "HmacSHA1");
+	public final static DigestType SHA256 = new DigestType("SHA-256", "HmacSHA256");
+	public final static DigestType SHA384 = new DigestType("SHA-384", "HmacSHA384");
 	
 	String jceName;
 	String jceHmacName;
@@ -22,4 +22,11 @@ public enum DigestType {
 		return jceHmacName;
 	}
 	
+	public String name() {
+		return new String(getJCEName());
+	}
+
+	public String toString() {
+		return name();
+	}
 }

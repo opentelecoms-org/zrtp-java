@@ -35,7 +35,6 @@ public class EncryptorSuiteImpl implements EncryptorSuite {
 		}
 	}
 
-	@Override
 	public void encrypt(byte[] aIV, byte[] buffer) throws CryptoException {
 		try {
 			byte[] _result = cipher.doFinal(aIV, 0, aIV.length);
@@ -46,7 +45,6 @@ public class EncryptorSuiteImpl implements EncryptorSuite {
 		}
 	}
 
-	@Override
 	public byte[] encryptIV_for_prf(byte[] IV) throws CryptoException {
 		try {
 			Cipher _cipher = Cipher.getInstance(CIPHER_ALGORITHM);

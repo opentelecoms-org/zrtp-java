@@ -21,12 +21,10 @@ public class RandomGeneratorImpl implements RandomGenerator {
 		}
 	}
 
-	@Override
 	public void getBytes(byte[] data) {
 		sr.nextBytes(data);
 	}
 
-	@Override
 	public void getBytes(byte[] data, int offset, int length) {
 		byte[] _data = new byte[length];
 		getBytes(_data);
@@ -34,31 +32,26 @@ public class RandomGeneratorImpl implements RandomGenerator {
 			data[offset + i] = _data[i];
 	}
 
-	@Override
 	public byte[] getBytes(int length) {
 		byte[] data = new byte[length];
 		getBytes(data);
 		return data;
 	}
 
-	@Override
 	public int getInt() {
 		return sr.nextInt();
 	}
 
-	@Override
 	public byte getByte() {
 		byte[] b = new byte[1];
 		getBytes(b);
 		return b[0];
 	}
 
-	@Override
 	public void seedUsingPcmAudio(byte[] mEntropyBytes) {
 		// FIXME
 	}
 
-	@Override
 	public boolean isInitialized() {
 		return true;
 	}

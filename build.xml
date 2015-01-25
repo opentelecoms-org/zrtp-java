@@ -16,14 +16,17 @@
         <mkdir dir="${dest}"/>
     </target>
 
+    <!-- This code is compiled for Java 1.4 to ensure compatibility
+         with a wide range of mobile development platforms, including
+         the Blackberry -->
     <target name="compile" depends="init">
         <javac classpathref="project.class.path"
                debug="true"
                deprecation="true"
                destdir="${dest}"
                nowarn="false"
-               target="1.5"
-               source="1.5">
+               target="1.4"
+               source="1.4">
             <src path="${src}"/>
             <exclude name="zorg/platform/android/*"/>
             <exclude name="zorg/platform/blackberry/*"/>

@@ -19,32 +19,26 @@ public class StandardLoggerImpl implements ZrtpLogger {
 		
 	}
 
-	@Override
 	public boolean isEnabled() {
 		return true;  // FIXME
 	}
 
-	@Override
 	public void log(String message) {
 		logger.log(Level.INFO, label + message);
 	}
 
-	@Override
 	public void log(String message, byte[] buffer) {
 		logger.log(Level.INFO, label + message + ": " + new UtilsImpl().byteToHexString(buffer));
 	}
 
-	@Override
 	public void logWarning(String message) {
 		logger.warning(label + message);
 	}
 
-	@Override
 	public void logException(String message) {
 		logger.log(Level.SEVERE, label + message);
 	}
 
-	@Override
 	public void log(String message, byte[] buffer, int offset, int length) {
 		logger.log(Level.INFO, label + message + ": " + new UtilsImpl().byteToHexString(buffer, offset, length));
 	}

@@ -7,31 +7,28 @@ import zorg.platform.LongSortedVector;
 
 public class LongSortedVectorImpl implements LongSortedVector {
 	
-	Vector<Long> vector = new Vector<Long>();
+	Vector vector = new Vector();
 	
 	public LongSortedVectorImpl() {
 		
 	}
 
-	@Override
 	public void removeAllElements() {
 		vector.removeAllElements();
 	}
 
-	@Override
 	public int size() {
 		return vector.size();
 	}
 
-	@Override
 	public int find(Long element) {
 		return vector.indexOf(element);
 	}
 
-	@Override
 	public void addElement(Long element) {
 		for(int i = 0; i < vector.size(); i++) {
-			if(vector.get(i).compareTo(element) >= 0) {
+			Long l = (Long)vector.get(i);
+			if(l.compareTo(element) >= 0) {
 				vector.insertElementAt(element, i);
 				return;
 			}
@@ -39,12 +36,10 @@ public class LongSortedVectorImpl implements LongSortedVector {
 		vector.add(element);
 	}
 
-	@Override
 	public Long getAt(int index) {
-		return vector.get(index);
+		return (Long)vector.get(index);
 	}
 
-	@Override
 	public void removeElementAt(int index) {
 		vector.remove(index);
 	}

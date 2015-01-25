@@ -12,7 +12,6 @@ public class ZrtpCacheEntryImpl implements ZrtpCacheEntry {
 		setNumber(number);
 	}
 
-	@Override
 	public void setData(byte[] data) {
 		if(data == null) {
 			this.data = null;
@@ -23,7 +22,6 @@ public class ZrtpCacheEntryImpl implements ZrtpCacheEntry {
 		}
 	}
 
-	@Override
 	public void setNumber(String number) {
 		if(number != null)
 			this.number = new String(number);
@@ -31,12 +29,10 @@ public class ZrtpCacheEntryImpl implements ZrtpCacheEntry {
 			number = null;
 	}
 
-	@Override
 	public byte[] getData() {
 		return data;
 	}
 
-	@Override
 	public String getNumber() {
 		return number;
 	}

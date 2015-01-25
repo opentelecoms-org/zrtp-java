@@ -53,7 +53,6 @@ public class CipherType {
 		return new String(symbol);
 	}
 
-	@Override
 	public String toString() {
 		return name();
 	}

@@ -38,28 +38,23 @@ public class CryptoUtilsImpl implements zorg.platform.CryptoUtils {
 		}
 	}
 	
-	@Override
 	public Digest createDigestSHA1() {
 		return makeDigestImpl(DigestType.SHA1);
 	}
 	
-	@Override
 	public Digest createDigestSHA256() {
 		return makeDigestImpl(DigestType.SHA256);
 	}
 
-	@Override
 	public Digest createDigestSHA384() {
 		return makeDigestImpl(DigestType.SHA384);
 	}
 
-	@Override
 	public byte[] calculateSHA256HMAC(byte[] data, int offset, int length,
 			byte[] aKey) {
 		return calculateHMAC(DigestType.SHA256, data, offset, length, aKey);
 	}
 
-	@Override
 	public byte[] calculateSHA384HMAC(byte[] data, int offset, int length,
 			byte[] aKey) {
 		return calculateHMAC(DigestType.SHA384, data, offset, length, aKey);
@@ -79,19 +74,16 @@ public class CryptoUtilsImpl implements zorg.platform.CryptoUtils {
 		}
 	}
 
-	@Override
 	public HMAC createHMACSHA1(byte[] hmacKey) throws CryptoException {
 		return new HMACSHA1Impl(hmacKey);
 	}
 
-	@Override
 	public RandomGenerator getRandomGenerator() {
 		return new RandomGeneratorImpl();
 	}
 	
 	final static String CIPHER_ALGORITHM_CFB = "AES/CFB64/NoPadding";
 
-	@Override
 	public byte[] aesEncrypt(byte[] data, byte[] key, byte[] initVector)
 			throws CryptoException {
 		try {
@@ -107,7 +99,6 @@ public class CryptoUtilsImpl implements zorg.platform.CryptoUtils {
 		}
 	}
 
-	@Override
 	public byte[] aesDecrypt(byte[] data, int offset, int length, byte[] key,
 			byte[] initVector) throws CryptoException {
 		try {
@@ -123,18 +114,15 @@ public class CryptoUtilsImpl implements zorg.platform.CryptoUtils {
 		}
 	}
 
-	@Override
 	public DiffieHellmanSuite createDHSuite() {
 		return new DiffieHellmanSuiteImpl();
 	}
 
-	@Override
 	public EncryptorSuite createEncryptorSuite(byte[] key, byte[] initVector)
 			throws CryptoException {
 		return new EncryptorSuiteImpl(key, initVector);
 	}
 
-	@Override
 	public void setRandomGenerator(RandomGenerator r) {
 		// TODO Auto-generated method stub
 		

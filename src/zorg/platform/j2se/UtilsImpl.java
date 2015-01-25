@@ -8,7 +8,6 @@ public class UtilsImpl implements zorg.platform.Utils {
 		
 	}
 
-	@Override
 	public boolean equals(byte[] array1, int offset1, byte[] array2,
 			int offset2, int length) {
 		// FIXME - performance
@@ -21,7 +20,6 @@ public class UtilsImpl implements zorg.platform.Utils {
 	
 	final static String hexChars = "0123456789abcdef";
 
-	@Override
 	public String byteToHexString(byte[] buffer, int offset, int length) {
 		if(buffer == null)
 			return "<null buffer>";
@@ -35,7 +33,6 @@ public class UtilsImpl implements zorg.platform.Utils {
 		return sb.toString();
 	}
 
-	@Override
 	public String byteToHexString(byte[] buffer) {
 		// FIXME - performance
 		if(buffer == null)
@@ -43,20 +40,17 @@ public class UtilsImpl implements zorg.platform.Utils {
 		return byteToHexString(buffer, 0, buffer.length);
 	}
 
-	@Override
 	public int getInt(byte[] data, int begin, int end) {
 		// TODO Auto-generated method stub
 		throw new RuntimeException("not implemented");
 	}
 
-	@Override
 	public void zero(byte[] data) {
 		// FIXME - performance
 		for(int i = 0; i < data.length; i++)
 			data[i] = 0;
 	}
 
-	@Override
 	public byte[] copy(byte[] data) {
 		// FIXME - performance
 		byte[] _data = new byte[data.length];
@@ -65,7 +59,6 @@ public class UtilsImpl implements zorg.platform.Utils {
 		return _data;
 	}
 
-	@Override
 	public LongSortedVector createSortedVector() {
 		return new LongSortedVectorImpl();
 	}

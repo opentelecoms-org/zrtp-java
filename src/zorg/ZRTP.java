@@ -1912,7 +1912,7 @@ public class ZRTP {
 		IncomingMessage msg = null;
 		while(true) {
 			synchronized(messageQueue) {
-				msg = messageQueue.poll();
+				msg = (IncomingMessage)messageQueue.poll();
 				if(msg == null)
 					return;
 			}
@@ -2368,7 +2368,7 @@ public class ZRTP {
 			return data;
 		}
 	}
-	LinkedList<IncomingMessage> messageQueue = new LinkedList<IncomingMessage>();
+	LinkedList messageQueue = new LinkedList();
 
 	private synchronized void sendConfirm2() throws IOException,
 			CryptoException {

@@ -15,27 +15,22 @@ public class DigestImpl implements Digest {
 		md = MessageDigest.getInstance(digestType.getJCEName());
 	}
 
-	@Override
 	public int getDigestLength() {
 		return md.getDigestLength();
 	}
 
-	@Override
 	public void update(byte[] buffer) {
 		md.update(buffer);
 	}
 
-	@Override
 	public void update(byte[] buffer, int offset, int length) {
 		md.update(buffer, offset, length);
 	}
 
-	@Override
 	public byte[] getDigest() {
 		return md.digest();
 	}
 
-	@Override
 	public int getDigest(byte[] buffer, int offset, boolean reset) {
 		// FIXME - remove the `reset' flag?  is it possible on every platform?
 		//  is there a performance gain?  Can we cache digest objects for re-use?

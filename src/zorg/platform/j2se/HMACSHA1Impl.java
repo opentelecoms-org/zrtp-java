@@ -28,22 +28,18 @@ public class HMACSHA1Impl implements HMAC {
 		}
 	}
 
-	@Override
 	public void reset() throws CryptoException {
 		mac.reset();
 	}
 
-	@Override
 	public void update(byte[] data, int offset, int length) {
 		mac.update(data, offset, length);
 	}
 
-	@Override
 	public void update(byte[] data) throws CryptoException {
 		update(data, 0, data.length);
 	}
 
-	@Override
 	public int getMAC(byte[] data, int offset) throws CryptoException {
 		try {
 			mac.doFinal(data, offset);
