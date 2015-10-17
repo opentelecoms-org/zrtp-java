@@ -328,7 +328,7 @@ public class DiffieHellmanSuiteImpl implements DiffieHellmanSuite {
 		    	agree.init(dhKeyPair.getPrivate());
 		    	agree.doPhase(keyFac.generatePublic(dhPKSpec), true);
 		    	byte[] iDHResult = agree.generateSecret();
-		    	log("DH shared secret: ", iDHResult);
+		    	//log("DH shared secret: ", iDHResult);
 		        return iDHResult;
 		    }
 		} catch (Exception e) {
