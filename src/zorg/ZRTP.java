@@ -525,9 +525,9 @@ public class ZRTP {
 			System.arraycopy(localZID, 0, kdfContext, 12, 12);
 		}
 		System.arraycopy(totalHash, 0, kdfContext, 24, totalHash.length);
-		if (platform.getLogger().isEnabled()) {
+		/* if (platform.getLogger().isEnabled()) {
 			logBuffer("iKDFContext: ", kdfContext);
-		}
+		} */
 
 		// Now work out s0
 		byte[] counter = { (byte) 0x00, (byte) 0x00, (byte) 0x00, (byte) 0x01 };
@@ -580,9 +580,9 @@ public class ZRTP {
 		s0 = null;
 		s0 = new byte[digest.getDigestLength()];
 		digest.getDigest(s0, 0, true);
-		if (platform.getLogger().isEnabled()) {
+		/* if (platform.getLogger().isEnabled()) {
 			logBuffer("S0: ", s0);
-		}
+		} */
 
 		// Now deriving the rest of the keys from s0 and KDF-Context (Section
 		// 4.5.3)
@@ -596,15 +596,15 @@ public class ZRTP {
 				kdfContext, cipherInUse.getSaltBits());
 		byte[] sasHash = getKeyFromKDF(s0, "SAS", kdfContext, 256);
 		newRS = getKeyFromKDF(s0, "retained secret", kdfContext, 256);
-		if (platform.getLogger().isEnabled()) {
+		/* if (platform.getLogger().isEnabled()) {
 			logBuffer("New retained secret: ", newRS);
-		}
+		} */
 
 		sasString = sasMode.getShortAuthenticationStrings(sasHash);
 
-		if (platform.getLogger().isEnabled()) {
+		/* if (platform.getLogger().isEnabled()) {
 			logString("calculateSharedKeys(), SAS: " + sasString);
-		}
+		} */
 
 		if (initiator) {
 			txMasterKey = srtpKeyI;
@@ -618,12 +618,12 @@ public class ZRTP {
 			rxMasterSalt = srtpSaltI;
 		}
 
-		if (platform.getLogger().isEnabled()) {
+		/* if (platform.getLogger().isEnabled()) {
 			logBuffer("iTxMasterKey: ", txMasterKey);
 			logBuffer("iTxMasterSalt: ", txMasterSalt);
 			logBuffer("iRxMasterKey: ", rxMasterKey);
 			logBuffer("iRxMasterSalt: ", rxMasterSalt);
-		}
+		} */
 	}
 
 	private boolean checkVersion(char major, char minor) throws IOException {
@@ -683,9 +683,9 @@ public class ZRTP {
 		                                   ? "Initiator HMAC key"
 				                           : "Responder HMAC key", kdfContext, dhMode.hash.getLength());
 		byte[] plainBytes = baos.toByteArray();
-		if (platform.getLogger().isEnabled()) {
+		/* if (platform.getLogger().isEnabled()) {
 			logBuffer("Confirm plainBytes: ", plainBytes);
-		}
+		} */
 		byte[] cipherBytes = platform.getCrypto().aesEncrypt(plainBytes,
 				zrtpKey, cfbInitVector);
 
@@ -1139,9 +1139,9 @@ public class ZRTP {
 		// expiry (1 word)
 		byte[] plainBytes = platform.getCrypto().aesDecrypt(data, offset + 36,
 				len - 36, zrtpKey, initVector);
-		if (platform.getLogger().isEnabled()) {
+		/* if (platform.getLogger().isEnabled()) {
 			logBuffer("Confirm plainBytes: ", plainBytes);
-		}
+		} */
 		farEndH0 = new byte[32];
 		System.arraycopy(plainBytes, 0, farEndH0, 0, 32);
 		int sigLen = (plainBytes[33] & 0x1) << 8 + plainBytes[34];

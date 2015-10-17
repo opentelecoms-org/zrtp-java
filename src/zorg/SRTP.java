@@ -824,15 +824,15 @@ public class SRTP {
 					.createEncryptorSuite(sessKey, initVector);
 			ByteArrayOutputStream baos = new ByteArrayOutputStream();
 			for (int i = 0; i < 3; ++i) {
-				logBuffer("testEncryption, IV - ", IV);
+				//logBuffer("testEncryption, IV - ", IV);
 				byte[] encrypted = encSuite.encryptIV_for_prf(IV);
-				logBuffer("testEncryption, encrypted block - ", encrypted);
+				//logBuffer("testEncryption, encrypted block - ", encrypted);
 				baos.write(encrypted);
 				incrementIV(IV);
 			}
 			outArray = baos.toByteArray();
 			baos.close();
-			logBuffer("testEncryption, outArray - ", outArray);
+			//logBuffer("testEncryption, outArray - ", outArray);
 		} catch (Throwable e) {
 			log("testEncryption, Exception thrown");
 			ret = false;
