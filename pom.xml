@@ -5,7 +5,7 @@
   <artifactId>zorg-zrtp</artifactId>
   <name>zorg-zrtp</name>
   <packaging>jar</packaging>
-  <version>1.0.0+f.1</version>
+  <version>1.0.0+f.2</version>
   <description>Fork of Zorg ZRTP</description>
   <url>https://github.com/opentelecoms-org/zrtp-java</url>
   <licenses>
